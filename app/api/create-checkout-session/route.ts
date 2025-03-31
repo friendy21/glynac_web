@@ -35,13 +35,13 @@ export async function POST(request: Request) {
     let unitAmount
     switch (planId) {
       case "starter":
-        unitAmount = billingCycle === "monthly" ? 2900 : 29000
+        unitAmount = billingCycle === "monthly" ? 10000 : 100000
         break
       case "professional":
-        unitAmount = billingCycle === "monthly" ? 7900 : 79000
+        unitAmount = billingCycle === "monthly" ? 20000 : 200000
         break
       case "enterprise":
-        unitAmount = billingCycle === "monthly" ? 19900 : 199000
+        unitAmount = billingCycle === "monthly" ? 30000 : 300000
         break
       default:
         unitAmount = 999

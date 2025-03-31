@@ -90,7 +90,7 @@ export default function SuccessPage() {
 
   const handleRedirectToDashboard = () => {
     setIsRedirecting(true)
-    // Simulate navigating to dashboard (replace with actual path)
+    // Redirect to dashboard
     setTimeout(() => {
       router.push("/dashboard")
     }, 500)
@@ -118,7 +118,7 @@ export default function SuccessPage() {
                 </div>
                 <CardTitle>Subscription Confirmed!</CardTitle>
                 <CardDescription>
-                  Thank you for subscribing to Glynac. Your account has been successfully set up.
+                  Thank you for subscribing to GLYNAC.AI. Your account has been successfully set up.
                 </CardDescription>
               </>
             )}
