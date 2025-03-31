@@ -5,7 +5,6 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown, Menu, Moon, Sun, X } from "lucide-react"
 import { useTheme } from "next-themes"
-import { motion } from "framer-motion"
 
 import { Button } from "@/components/ui/button"
 import MegaMenu from "../navigation/MegaMenu"
@@ -23,17 +22,24 @@ const MenuBar = () => {
   const pathname = usePathname()
   const dropdownRef = useRef<HTMLDivElement>(null)
   const { theme, setTheme } = useTheme()
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
   const toggleMenu = () => {
     setIsOpen(!isOpen)
   }
 
-  const handleDropdownToggle = (dropdown: string) => {
-    if (activeDropdown === dropdown) {
-      setActiveDropdown(null)
-    } else {
-      setActiveDropdown(dropdown)
+  const handleDropdownHover = (dropdown: string) => {
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current)
     }
+    setActiveDropdown(dropdown)
+  }
+
+  const handleDropdownLeave = () => {
+    // Add delay before closing dropdown to allow moving to dropdown content
+    timeoutRef.current = setTimeout(() => {
+      setActiveDropdown(null)
+    }, 100)
   }
 
   const closeDropdown = () => {
@@ -100,8 +106,15 @@ const MenuBar = () => {
                     className={`nav-link flex items-center gap-1 text-base transition-colors hover:text-[#1E90FF] ${
                       pathname.startsWith(item.path) ? "text-[#1E90FF]" : "text-foreground"
                     }`}
-                    onClick={() => handleDropdownToggle(item.name)}
-                    onMouseEnter={() => handleDropdownToggle(item.name)}
+                    onMouseEnter={() => handleDropdownHover(item.name)}
+                    onMouseLeave={handleDropdownLeave}
+                    onClick={() => {
+                      if (activeDropdown === item.name) {
+                        setActiveDropdown(null)
+                      } else {
+                        setActiveDropdown(item.name)
+                      }
+                    }}
                   >
                     {item.name}
                     <ChevronDown className="h-4 w-4" />
@@ -118,7 +131,9 @@ const MenuBar = () => {
                   </Link>
                 )}
                 {item.dropdown && activeDropdown === item.name && (
-                  <MegaMenu isOpen={true} category={item.name} onClose={closeDropdown} />
+                  <div onMouseEnter={() => handleDropdownHover(item.name)} onMouseLeave={handleDropdownLeave}>
+                    <MegaMenu isOpen={true} category={item.name} onClose={closeDropdown} />
+                  </div>
                 )}
               </div>
             ))}
@@ -182,18 +197,14 @@ const MenuBar = () => {
                         className={`flex items-center justify-between w-full text-lg transition-colors hover:text-[#1E90FF] ${
                           pathname.startsWith(item.path) ? "text-[#1E90FF]" : "text-foreground"
                         }`}
-                        onClick={() => handleDropdownToggle(item.name)}
+                        onClick={() => setActiveDropdown(activeDropdown === item.name ? null : item.name)}
                       >
                         {item.name}
                         <ChevronDown className="h-5 w-5" />
                       </button>
                       {activeDropdown === item.name && (
-                        <motion.div
+                        <div
                           className="ml-4 space-y-3 border-l-2 border-gray-200 dark:border-gray-700 pl-4"
-                          initial={{ opacity: 0, height: 0 }}
-                          animate={{ opacity: 1, height: "auto" }}
-                          exit={{ opacity: 0, height: 0 }}
-                          transition={{ duration: 0.3 }}
                         >
                           {item.name === "Products" && (
                             <>
@@ -274,7 +285,7 @@ const MenuBar = () => {
                               </Link>
                             </>
                           )}
-                        </motion.div>
+                        </div>
                       )}
                     </>
                   ) : (
@@ -305,4 +316,3 @@ const MenuBar = () => {
 }
 
 export default MenuBar
-

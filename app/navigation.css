@@ -1,0 +1,126 @@
+/* Enhanced Navigation Styles */
+.mega-menu {
+    animation: fadeIn 0.2s ease-in-out;
+    transform-origin: top center;
+    backdrop-filter: blur(10px);
+    width: 100%;
+    left: 0;
+  }
+  
+  .nav-link {
+    position: relative;
+    font-weight: 500;
+  }
+  
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 0;
+    background-color: #1e90ff;
+    transition: width 0.3s ease;
+  }
+  
+  .nav-link:hover::after {
+    width: 100%;
+  }
+  
+  .nav-item-wrapper {
+    position: relative;
+  }
+  
+  .menu-category {
+    color: #1e90ff;
+    font-size: 1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+  }
+  
+  .menu-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+  }
+  
+  .menu-item:hover {
+    background-color: #f8f9fa;
+    transform: translateY(-2px);
+  }
+  
+  .menu-item-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 0.5rem;
+    background-color: #fff;
+    border: 1px solid rgba(59, 130, 246, 0.1);
+  }
+  
+  .menu-item-content h4 {
+    font-weight: 500;
+    margin: 0 0 0.25rem;
+  }
+  
+  .menu-item-content p {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+  
+  .menu-cta {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid #e9ecef;
+  }
+  
+  .menu-cta-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background: linear-gradient(to right, rgba(59, 130, 246, 0.05), rgba(59, 130, 246, 0.1));
+  }
+  
+  .menu-cta-content h3 {
+    color: #1e90ff;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+  }
+  
+  .menu-cta-content p {
+    color: #6c757d;
+    font-size: 0.875rem;
+    margin: 0;
+  }
+  
+  /* Add these animations to your globals.css */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  @keyframes slideInFromLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
