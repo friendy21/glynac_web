@@ -84,6 +84,49 @@ const MenuBar = () => {
     { name: "Pricing", path: "/pricing", dropdown: false },
   ]
 
+  const renderMobileDropdownItems = (category: string) => {
+    switch (category) {
+      case "Products":
+        return [
+          { name: "AI Qualitative", path: "/ai-analysis/ai-qualitative" },
+          { name: "AI Quantitative", path: "/ai-analysis/ai-quantitative" },
+          { name: "Data Selection", path: "/features/data-selection" },
+          { name: "Demographic Data", path: "/features/demographic-data" },
+          { name: "Standardized Data", path: "/features/standardized-data" },
+          { name: "Glynac Software", path: "/software/Glynac-software" },
+          { name: "Communication Tools", path: "/software/communication-tools" },
+          { name: "Email Tools", path: "/software/email-tools" },
+        ]
+      case "Solutions":
+        return [
+          { name: "Security", path: "/security" },
+          { name: "Authentication", path: "/solutions/authentication" },
+          { name: "Healthcare", path: "/solutions/healthcare" },
+          { name: "Finance", path: "/solutions/finance" },
+          { name: "Education", path: "/solutions/education" },
+        ]
+      case "Resources":
+        return [
+          { name: "About", path: "/resources/about" },
+          { name: "Blog", path: "/resources/blog" },
+          { name: "Client Cases", path: "/resources/client_case" },
+          { name: "FAQ", path: "/resources/faq" },
+          { name: "Manual", path: "/resources/manual" },
+          { name: "Support", path: "/resources/support" },
+          { name: "News", path: "/resources/news" },
+          { name: "Partner Program", path: "/resources/partner-program" },
+          { name: "Updates", path: "/resources/updates" },
+        ]
+      case "Company":
+        return [
+          { name: "Organizational Chart", path: "/OrganisationalChart" },
+          { name: "Contacts", path: "/resources/contacts" },
+        ]
+      default:
+        return []
+    }
+  }
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
@@ -206,85 +249,16 @@ const MenuBar = () => {
                         <div
                           className="ml-4 space-y-3 border-l-2 border-gray-200 dark:border-gray-700 pl-4"
                         >
-                          {item.name === "Products" && (
-                            <>
-                              <Link
-                                href="/ai-analysis/ai-qualitative"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                AI Qualitative
-                              </Link>
-                              <Link
-                                href="/ai-analysis/ai-quantitative"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                AI Quantitative
-                              </Link>
-                              <Link
-                                href="/product/platform-overview"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                Platform Overview
-                              </Link>
-                            </>
-                          )}
-                          {item.name === "Solutions" && (
-                            <>
-                              <Link
-                                href="/security"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                Security
-                              </Link>
-                              <Link
-                                href="/solutions/enterprise"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                Enterprise
-                              </Link>
-                            </>
-                          )}
-                          {item.name === "Resources" && (
-                            <>
-                              <Link
-                                href="/resources/documentation"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                Documentation
-                              </Link>
-                              <Link
-                                href="/resources/support"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                Support
-                              </Link>
-                            </>
-                          )}
-                          {item.name === "Company" && (
-                            <>
-                              <Link
-                                href="/OrganisationalChart"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                Our Team
-                              </Link>
-                              <Link
-                                href="/contact"
-                                className="block text-base transition-colors hover:text-[#1E90FF]"
-                                onClick={toggleMenu}
-                              >
-                                Contact
-                              </Link>
-                            </>
-                          )}
+                          {renderMobileDropdownItems(item.name).map((subItem) => (
+                            <Link
+                              key={subItem.path}
+                              href={subItem.path}
+                              className="block text-base transition-colors hover:text-[#1E90FF]"
+                              onClick={toggleMenu}
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
                         </div>
                       )}
                     </>

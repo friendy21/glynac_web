@@ -5,6 +5,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import MenuBar from "./components/menu/MenuBar"
 import Footer from "./widgets/layout/footer/Footer"
+import ChatBotProvider from "./components/chat/ChatBotProvider"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,7 +20,6 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Glynac.AI - AI-Powered Solutions",
   description: "Glynac provides AI-powered solutions for business transformation",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({
@@ -31,17 +31,16 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="light" enableSystem disableTransitionOnChange>
-          <div className="flex min-h-screen flex-col">
-            <MenuBar />
-            <main className="flex-1">{children}</main>
-            <Footer />
-          </div>
+          <ChatBotProvider>
+            <div className="flex min-h-screen flex-col">
+              <MenuBar />
+              <main className="flex-1">{children}</main>
+              <Footer />
+            </div>
+          </ChatBotProvider>
         </ThemeProvider>
       </body>
     </html>
   )
 }
 
-
-
-import './globals.css'

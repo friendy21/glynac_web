@@ -15,6 +15,12 @@ import {
   MessageSquare,
   Shield,
   Users,
+  Briefcase,
+  BookOpen,
+  Newspaper,
+  Contact,
+  PlaySquare,
+  Award,
 } from "lucide-react"
 
 interface MegaMenuItem {
@@ -97,25 +103,25 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen, category, onClose }) => {
               ],
             },
             {
-              title: "Platform",
+              title: "Software Solutions",
               items: [
                 {
                   icon: <Globe className="h-6 w-6 text-[#1E90FF]" />,
                   name: "Glynac Software",
                   description: "Core Glynac software solutions",
-                  path: "/product/platform-overview",
+                  path: "/software/Glynac-software",
                 },
                 {
                   icon: <MessageSquare className="h-6 w-6 text-[#1E90FF]" />,
                   name: "Communication Tools",
                   description: "Tools to enhance team communication",
-                  path: "/product/engage",
+                  path: "/software/communication-tools",
                 },
                 {
                   icon: <LineChart className="h-6 w-6 text-[#1E90FF]" />,
-                  name: "Glynac Forecast",
-                  description: "Pinpoint your number and paths to target",
-                  path: "/product/forecast",
+                  name: "Email Tools",
+                  description: "Streamline your email communication",
+                  path: "/software/email-tools",
                 },
               ],
             },
@@ -170,19 +176,25 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen, category, onClose }) => {
         return {
           sections: [
             {
-              title: "Documentation",
+              title: "Learn",
               items: [
                 {
-                  icon: <FileText className="h-6 w-6 text-[#1E90FF]" />,
-                  name: "API Documentation",
-                  description: "Comprehensive API documentation",
-                  path: "/resources/api-docs",
+                  icon: <BookOpen className="h-6 w-6 text-[#1E90FF]" />,
+                  name: "About",
+                  description: "Learn about Glynac",
+                  path: "/resources/about",
                 },
                 {
-                  icon: <FileText className="h-6 w-6 text-[#1E90FF]" />,
-                  name: "User Guides",
-                  description: "Detailed user guides and tutorials",
-                  path: "/resources/user-guides",
+                  icon: <Newspaper className="h-6 w-6 text-[#1E90FF]" />,
+                  name: "Blog",
+                  description: "Insights and updates",
+                  path: "/resources/blog",
+                },
+                {
+                  icon: <PlaySquare className="h-6 w-6 text-[#1E90FF]" />,
+                  name: "Client Cases",
+                  description: "Success stories and case studies",
+                  path: "/resources/client_case",
                 },
               ],
             },
@@ -196,10 +208,39 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen, category, onClose }) => {
                   path: "/resources/faq",
                 },
                 {
-                  icon: <HelpCircle className="h-6 w-6 text-[#1E90FF]" />,
+                  icon: <FileText className="h-6 w-6 text-[#1E90FF]" />,
+                  name: "Manual",
+                  description: "Detailed user manual",
+                  path: "/resources/manual",
+                },
+                {
+                  icon: <Contact className="h-6 w-6 text-[#1E90FF]" />,
                   name: "Support",
                   description: "Get help from our support team",
                   path: "/resources/support",
+                },
+              ],
+            },
+            {
+              title: "Other Resources",
+              items: [
+                {
+                  icon: <Newspaper className="h-6 w-6 text-[#1E90FF]" />,
+                  name: "News",
+                  description: "Latest company news",
+                  path: "/resources/news",
+                },
+                {
+                  icon: <Award className="h-6 w-6 text-[#1E90FF]" />,
+                  name: "Partner Program",
+                  description: "Explore partnership opportunities",
+                  path: "/resources/partner-program",
+                },
+                {
+                  icon: <Briefcase className="h-6 w-6 text-[#1E90FF]" />,
+                  name: "Updates",
+                  description: "Product and service updates",
+                  path: "/resources/updates",
                 },
               ],
             },
@@ -219,20 +260,9 @@ const MegaMenu: React.FC<MegaMenuProps> = ({ isOpen, category, onClose }) => {
                 },
                 {
                   icon: <Globe className="h-6 w-6 text-[#1E90FF]" />,
-                  name: "Careers",
-                  description: "Join our growing team",
-                  path: "/company/careers",
-                },
-              ],
-            },
-            {
-              title: "Contact",
-              items: [
-                {
-                  icon: <MessageSquare className="h-6 w-6 text-[#1E90FF]" />,
-                  name: "Contact Us",
+                  name: "Contact",
                   description: "Get in touch with our team",
-                  path: "/contact",
+                  path: "/resources/contacts",
                 },
               ],
             },
