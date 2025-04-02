@@ -6,21 +6,28 @@ import { FingerPrintIcon, SpeakerWaveIcon, SpeakerXMarkIcon, PlayIcon, PauseIcon
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 
-export function About() {
+// Define leadership item interface
+interface LeadershipItem {
+  src: string;
+  name: string;
+  description: string;
+}
+
+export function About(): JSX.Element {
   const { scrollYProgress } = useScroll();
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
   const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
 
   // Video player state and refs
-  const videoRef = useRef(null);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const [isMuted, setIsMuted] = useState<boolean>(true);
+  const [currentTime, setCurrentTime] = useState<number>(0);
+  const [duration, setDuration] = useState<number>(0);
+  const [isHovered, setIsHovered] = useState<boolean>(false);
   
   // Handle Play/Pause toggle
-  const handlePlayPause = () => {
+  const handlePlayPause = (): void => {
     const video = videoRef.current;
     if (video) {
       if (isPlaying) {
@@ -33,7 +40,7 @@ export function About() {
   };
 
   // Handle Mute/Unmute toggle
-  const handleMuteUnmute = () => {
+  const handleMuteUnmute = (): void => {
     const video = videoRef.current;
     if (video) {
       video.muted = !isMuted;
@@ -42,7 +49,7 @@ export function About() {
   };
 
   // Handle the video time update
-  const handleTimeUpdate = () => {
+  const handleTimeUpdate = (): void => {
     const video = videoRef.current;
     if (video) {
       setCurrentTime(video.currentTime);
@@ -50,15 +57,15 @@ export function About() {
   };
 
   // Handle range input change to seek video
-  const handleSeek = (e) => {
+  const handleSeek = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const video = videoRef.current;
     if (video) {
-      video.currentTime = e.target.value;
+      video.currentTime = Number(e.target.value);
     }
   };
 
   // Set the video duration once the metadata is loaded
-  const handleLoadedMetadata = () => {
+  const handleLoadedMetadata = (): void => {
     const video = videoRef.current;
     if (video) {
       setDuration(video.duration);
@@ -80,6 +87,13 @@ export function About() {
       }
     };
   }, []);
+
+  // Leadership data
+  const leadershipData: LeadershipItem[] = [
+    { src: "/img/leadership1.webp", name: "Andrew Rosenthal", description: "CEO & Founder with 20+ years in AI analytics." },
+    { src: "/img/leadership2.webp", name: "Bo Shi", description: "CFO mastering financial strategy and growth." },
+    { src: "/img/leadership3.webp", name: "Tanuj Sharma", description: "CTO pioneering scalable tech innovations." },
+  ];
 
   return (
     <>
@@ -231,7 +245,7 @@ export function About() {
                 ref={videoRef}
                 className="rounded-xl w-full h-full object-cover"
                 src="/Video/Artificial Intelligence in 2 Minutes _ What is Artificial Intelligence_ _ Edureka(720P_HD).mp4"
-                type="video/mp4"
+                // Removed type attribute as it's not valid for video element in React/JSX
                 autoPlay
                 loop
                 muted={isMuted}
@@ -287,11 +301,7 @@ export function About() {
           Our Leadership
         </Typography>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          {[
-            { src: "/img/leadership1.webp", name: "Andrew Rosenthal", description: "CEO & Founder with 20+ years in AI analytics." },
-            { src: "/img/leadership2.webp", name: "Bo Shi", description: "CFO mastering financial strategy and growth." },
-            { src: "/img/leadership3.webp", name: "Tanuj Sharma", description: "CTO pioneering scalable tech innovations." },
-          ].map(({ src, name, description }, index) => (
+          {leadershipData.map(({ src, name, description }, index) => (
             <motion.div
               initial={{ opacity: 0, y: 50, rotate: -10 }}
               whileInView={{ opacity: 1, y: 0, rotate: 0 }}
