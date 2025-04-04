@@ -1,7 +1,35 @@
 import { motion } from "framer-motion";
-import { FileText, BookOpen, Video } from "lucide-react";
+import { FileText, BookOpen, Video, LucideIcon } from "lucide-react";
+import React from "react";
 
-export default function Manual() {
+// Define TypeScript interfaces
+interface GuideItem {
+  title: string;
+  icon: LucideIcon;
+  desc: string;
+  button: string;
+}
+
+interface TrainingItem {
+  title: string;
+  icon: LucideIcon;
+  desc: string;
+}
+
+export default function Manual(): React.ReactElement {
+  // Define guide items
+  const guideItems: GuideItem[] = [
+    { title: "PDF Guide", icon: FileText, desc: "Download our detailed PDF guide.", button: "Download Now" },
+    { title: "Glossary", icon: BookOpen, desc: "Key terms and definitions.", button: "View Glossary" },
+  ];
+
+  // Define training items
+  const trainingItems: TrainingItem[] = [
+    { title: "Getting Started", icon: Video, desc: "Learn the basics of our platform." },
+    { title: "Advanced Features", icon: Video, desc: "Master advanced functionalities." },
+    { title: "Troubleshooting", icon: Video, desc: "Resolve common issues." },
+  ];
+
   return (
     <div className="min-h-screen bg-gray-100 text-gray-800">
       {/* Hero Section */}
@@ -36,10 +64,7 @@ export default function Manual() {
       {/* PDF Guide and Glossary */}
       <section className="py-12 px-4">
         <div className="max-w-5xl mx-auto flex flex-col sm:flex-row gap-6">
-          {[
-            { title: "PDF Guide", icon: FileText, desc: "Download our detailed PDF guide.", button: "Download Now" },
-            { title: "Glossary", icon: BookOpen, desc: "Key terms and definitions.", button: "View Glossary" },
-          ].map((item, index) => (
+          {guideItems.map((item, index) => (
             <motion.div
               key={index}
               className="w-full sm:w-[48%] bg-white bg-opacity-30 backdrop-blur-md border border-white border-opacity-20 p-6 rounded-lg shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300"
@@ -66,11 +91,7 @@ export default function Manual() {
             Training Documentation
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {[
-              { title: "Getting Started", icon: Video, desc: "Learn the basics of our platform." },
-              { title: "Advanced Features", icon: Video, desc: "Master advanced functionalities." },
-              { title: "Troubleshooting", icon: Video, desc: "Resolve common issues." },
-            ].map((item, index) => (
+            {trainingItems.map((item, index) => (
               <motion.div
                 key={index}
                 className="bg-white bg-opacity-30 backdrop-blur-md border border-white border-opacity-20 p-6 rounded-lg shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300"

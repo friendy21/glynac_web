@@ -1,63 +1,67 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
+import { useState, useRef, useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { MessageSquare, Send, X, Loader2, Bot } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { cn } from "@/lib/utils";
 
-import { useState, useRef, useEffect } from "react"
-import { AnimatePresence, motion } from "framer-motion"
-import { MessageSquare, Send, X, Loader2, Bot } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { cn } from "@/lib/utils"
-
+// Interface for chat messages
 interface ChatMessage {
-  id: string
-  content: string
-  role: "user" | "assistant"
-  timestamp: Date
+  id: string;
+  content: string;
+  role: "user" | "assistant";
+  timestamp: Date;
+  quickReplies?: string[]; // Optional quick reply options
 }
 
+// Initial welcome message
 const INITIAL_MESSAGES: ChatMessage[] = [
   {
     id: "welcome",
     content: "Hello! I'm Glynac Assistant. How can I help you today?",
     role: "assistant",
     timestamp: new Date(),
+    quickReplies: ["Pricing", "Demo", "Features"],
   },
-]
+];
 
 const ChatBot = () => {
-  const [isOpen, setIsOpen] = useState(false)
-  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES)
-  const [input, setInput] = useState("")
-  const [isTyping, setIsTyping] = useState(false)
-  const messagesEndRef = useRef<HTMLDivElement>(null)
-  const inputRef = useRef<HTMLInputElement>(null)
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
+  const [input, setInput] = useState("");
+  const [isTyping, setIsTyping] = useState(false);
+  const [currentTopic, setCurrentTopic] = useState<string | null>(null); // Context tracking
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   // Focus input when chat opens
   useEffect(() => {
     if (isOpen) {
       setTimeout(() => {
-        inputRef.current?.focus()
-      }, 300)
+        inputRef.current?.focus();
+      }, 300);
     }
-  }, [isOpen])
+  }, [isOpen]);
 
   const toggleChat = () => {
-    setIsOpen(!isOpen)
-  }
+    setIsOpen(!isOpen);
+  };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInput(e.target.value)
-  }
+    setInput(e.target.value);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!input.trim()) return
+    e.preventDefault();
+    if (!input.trim()) return;
 
     // Add user message
     const userMessage: ChatMessage = {
@@ -65,63 +69,153 @@ const ChatBot = () => {
       content: input,
       role: "user",
       timestamp: new Date(),
-    }
-    setMessages((prev) => [...prev, userMessage])
-    setInput("")
-    setIsTyping(true)
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setInput("");
+    setIsTyping(true);
 
-    // Simulate bot response
-    setTimeout(
-      () => {
-        const botResponse = generateResponse(input)
-        const botMessage: ChatMessage = {
-          id: (Date.now() + 1).toString(),
-          content: botResponse,
-          role: "assistant",
-          timestamp: new Date(),
-        }
-        setMessages((prev) => [...prev, botMessage])
-        setIsTyping(false)
+    // Simulate bot response with delay
+    setTimeout(() => {
+      const { content, quickReplies } = generateResponse(input);
+      const botMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content,
+        role: "assistant",
+        timestamp: new Date(),
+        quickReplies,
+      };
+      setMessages((prev) => [...prev, botMessage]);
+      setIsTyping(false);
+    }, 1000 + Math.random() * 1000); // Random delay between 1-2 seconds
+  };
+
+  // Handle quick reply clicks
+  const handleQuickReply = (reply: string) => {
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      content: reply,
+      role: "user",
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setIsTyping(true);
+
+    setTimeout(() => {
+      const { content, quickReplies } = generateResponse(reply);
+      const botMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        content,
+        role: "assistant",
+        timestamp: new Date(),
+        quickReplies,
+      };
+      setMessages((prev) => [...prev, botMessage]);
+      setIsTyping(false);
+    }, 1000);
+  };
+
+  // Local response generator with context awareness
+  const generateResponse = (userInput: string): { content: string; quickReplies?: string[] } => {
+    const input = userInput.toLowerCase().replace(/[^\w\s]/g, ""); // Normalize input
+
+    // Response definitions
+    const responses = [
+      {
+        keywords: ["pricing", "cost", "price"],
+        response: "Our pricing plans start at $29/month for the Starter plan. We also have Pro at $99/month and Enterprise at $499/month. Want details on a specific plan?",
+        quickReplies: ["Starter", "Pro", "Enterprise"],
+        topic: "pricing",
       },
-      1000 + Math.random() * 1000,
-    ) // Random delay between 1-2 seconds
-  }
+      {
+        keywords: ["demo", "trial"],
+        response: "We offer a 14-day free trial for all plans—no credit card needed. Would you like to know how to start one?",
+        quickReplies: ["Yes", "No"],
+        topic: "demo",
+      },
+      {
+        keywords: ["ai", "analysis", "features", "qualitative", "quantitative"],
+        response: "Our AI tools handle both qualitative and quantitative analysis, processing large datasets quickly. Want to dive into a specific feature?",
+        quickReplies: ["Qualitative", "Quantitative"],
+        topic: "features",
+      },
+      {
+        keywords: ["security", "privacy", "data protection"],
+        response: "We prioritize security with end-to-end encryption and GDPR compliance. Need more details?",
+        quickReplies: ["Yes", "No"],
+        topic: "security",
+      },
+      {
+        keywords: ["contact", "support", "help"],
+        response: "Our support team is available Monday-Friday, 9AM-6PM EST at support@glynac.ai. Want me to connect you?",
+        quickReplies: ["Yes", "No"],
+        topic: "support",
+      },
+      {
+        keywords: ["hello", "hi", "hey"],
+        response: "Hi there! How can I assist you today?",
+        quickReplies: ["Pricing", "Demo", "Features"],
+        topic: null,
+      },
+    ];
 
-  // Simple response generator - in a real app, this would be replaced with an API call
-  const generateResponse = (userInput: string): string => {
-    const input = userInput.toLowerCase()
-
-    if (input.includes("pricing") || input.includes("cost") || input.includes("price")) {
-      return "Our pricing plans start at $29/month for the Starter plan. You can view all our pricing options on our pricing page. Would you like me to provide more details about a specific plan?"
+    // Check context for follow-ups
+    if (currentTopic === "pricing") {
+      if (input.includes("starter")) {
+        setCurrentTopic(null);
+        return { content: "The Starter plan is $29/month and includes basic features." };
+      }
+      if (input.includes("pro")) {
+        setCurrentTopic(null);
+        return { content: "The Pro plan is $99/month with advanced analytics." };
+      }
+      if (input.includes("enterprise")) {
+        setCurrentTopic(null);
+        return { content: "The Enterprise plan is $499/month with full support." };
+      }
+    } else if (currentTopic === "demo") {
+      if (input.includes("yes")) {
+        setCurrentTopic(null);
+        return { content: "Great! Visit our website and click 'Start Trial' to begin." };
+      }
+      if (input.includes("no")) {
+        setCurrentTopic(null);
+        return { content: "No problem! Anything else I can help with?" };
+      }
+    } else if (currentTopic === "features") {
+      if (input.includes("qualitative")) {
+        setCurrentTopic(null);
+        return { content: "Qualitative analysis helps you understand text data insights." };
+      }
+      if (input.includes("quantitative")) {
+        setCurrentTopic(null);
+        return { content: "Quantitative analysis crunches numbers fast." };
+      }
+    } else if (currentTopic === "security" || currentTopic === "support") {
+      if (input.includes("yes")) {
+        setCurrentTopic(null);
+        return { content: "I’ll pass you to a human agent soon. For now, check our website!" };
+      }
+      if (input.includes("no")) {
+        setCurrentTopic(null);
+        return { content: "Okay, let me know what else you need!" };
+      }
     }
 
-    if (input.includes("demo") || input.includes("trial")) {
-      return "We offer a 14-day free trial for all our plans. No credit card required to start. Would you like me to help you set up a trial account?"
+    // Match input to responses
+    for (const { keywords, response, quickReplies, topic } of responses) {
+      if (keywords.some((keyword) => input.includes(keyword))) {
+        setCurrentTopic(topic);
+        return { content: response, quickReplies };
+      }
     }
 
-    if (
-      input.includes("ai") ||
-      input.includes("analysis") ||
-      input.includes("qualitative") ||
-      input.includes("quantitative")
-    ) {
-      return "Our AI analysis tools include both qualitative and quantitative analysis capabilities. Our AI can process large datasets, identify patterns, and generate insights much faster than traditional methods. Would you like to learn more about a specific analysis type?"
-    }
-
-    if (input.includes("security") || input.includes("data protection") || input.includes("privacy")) {
-      return "Security is our top priority. We use end-to-end encryption, regular security audits, and comply with major regulations like GDPR and SOC 2 Type II. Would you like to speak with our security team for more details?"
-    }
-
-    if (input.includes("contact") || input.includes("support") || input.includes("help")) {
-      return "Our support team is available Monday-Friday, 9AM-6PM EST. You can reach us at support@glynac.ai or through our contact page. Would you like me to connect you with a support agent?"
-    }
-
-    if (input.includes("hello") || input.includes("hi") || input.includes("hey")) {
-      return "Hello! How can I assist you with Glynac's services today?"
-    }
-
-    return "Thank you for your message. I'm not sure I understand your question. Could you provide more details or ask about our pricing, AI analysis tools, security, or support options?"
-  }
+    // Default response
+    setCurrentTopic(null);
+    return {
+      content: "I’m not sure I understand. Could you ask about pricing, demo, or features?",
+      quickReplies: ["Pricing", "Demo", "Features"],
+    };
+  };
 
   return (
     <>
@@ -177,6 +271,20 @@ const ChatBot = () => {
                       )}
                     >
                       <p className="text-sm">{message.content}</p>
+                      {message.quickReplies && (
+                        <div className="mt-2 flex flex-wrap gap-2">
+                          {message.quickReplies.map((reply) => (
+                            <Button
+                              key={reply}
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleQuickReply(reply)}
+                            >
+                              {reply}
+                            </Button>
+                          ))}
+                        </div>
+                      )}
                       <p className="mt-1 text-right text-xs opacity-70">
                         {message.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                       </p>
@@ -225,8 +333,7 @@ const ChatBot = () => {
         )}
       </AnimatePresence>
     </>
-  )
-}
+  );
+};
 
-export default ChatBot
-
+export default ChatBot;

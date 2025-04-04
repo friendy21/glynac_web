@@ -1,77 +1,128 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from "react";
+import { 
+  FunnelIcon, 
+  AdjustmentsHorizontalIcon, 
+  MagnifyingGlassIcon,
+  ArrowsPointingOutIcon
+} from "@heroicons/react/24/outline";
+import Image from "next/image";
+import Head from "next/head";
+import { motion } from "framer-motion";
 
-interface Particle {
-  x: number;
-  y: number;
-  radius: number;
-  speedX: number;
-  speedY: number;
-  color: string;
+// Define interfaces for data types
+// Removed Particle interface
+
+interface FeatureCardProps {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
 }
 
-export function DataSelection(): JSX.Element {
-  // Particle animation logic
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+interface Tab {
+  title: string;
+  content: React.ReactNode;
+}
 
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+interface Feature {
+  title: string;
+  description: string;
+  icon: React.ReactNode;
+}
 
-    const width = canvas.width = window.innerWidth;
-    const height = canvas.height = window.innerHeight;
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2, delayChildren: 0.3 }
+  }
+};
 
-    // Particle settings
-    const numParticles = 100;
-    const particles: Particle[] = [];
+const itemVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.8, ease: "easeOut", type: "spring", stiffness: 100 }
+  }
+};
 
-    for (let i = 0; i < numParticles; i++) {
-      particles.push({
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 6 + 2,
-        speedX: (Math.random() - 0.5) * 1.5,
-        speedY: (Math.random() - 0.5) * 1.5,
-        color: `hsla(${Math.random() * 360}, 100%, 100%, ${Math.random() * 0.5 + 0.5})`, // Random opacity for glitter effect
-      });
-    }
+const hoverEffect = {
+  scale: 1.05,
+  rotate: 2,
+  transition: { duration: 0.5, type: "spring", stiffness: 150 }
+};
 
-    let animationFrameId: number;
-    
-    const animate = () => {
-      ctx.clearRect(0, 0, width, height);
+const fadeIn = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { duration: 1.5, ease: "easeInOut" } }
+};
 
-      particles.forEach((particle) => {
-        // Update particle position
-        particle.x += particle.speedX;
-        particle.y += particle.speedY;
+// Removed StarryBackground Component
 
-        // Wrap particles around the edges
-        if (particle.x > width) particle.x = 0;
-        if (particle.x < 0) particle.x = width;
-        if (particle.y > height) particle.y = 0;
-        if (particle.y < 0) particle.y = height;
+// Feature Card Component with motion
+const FeatureCard: React.FC<FeatureCardProps> = ({ title, description, icon }) => (
+  <motion.div 
+    variants={itemVariants}
+    whileHover={hoverEffect}
+    className="rounded-lg border border-border p-6 bg-background shadow-sm hover:shadow transition-shadow"
+  >
+    <div className="text-center">
+      <motion.div 
+        className="flex justify-center mb-4"
+        whileHover={{ rotate: 360 }}
+        transition={{ duration: 0.8 }}
+      >
+        {icon}
+      </motion.div>
+      <h3 className="text-xl font-bold mb-2">{title}</h3>
+      <p className="text-muted-foreground">{description}</p>
+    </div>
+  </motion.div>
+);
 
-        // Draw glowing particles with glitter effect
-        ctx.beginPath();
-        ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
-        ctx.fillStyle = particle.color;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = particle.color;
-        ctx.fill();
-      });
+export function DataSelection(): React.ReactElement {
+  const [activeTab, setActiveTab] = useState<number>(0);
 
-      animationFrameId = requestAnimationFrame(animate);
-    };
+  const dataTransformationSteps: Tab[] = [
+    { 
+      title: "Exploratory Analysis", 
+      content: "Understand the data's structure, identify patterns, inconsistencies, and potential biases. This crucial first step lays the foundation for all subsequent processing, as it helps determine which cleaning and transformation techniques are most appropriate." 
+    },
+    { 
+      title: "Data Cleaning", 
+      content: "Rectify errors, handle missing values, and address outliers that could skew the model's learning. This step ensures the integrity of the dataset by removing corrupted records, standardizing formats, and imputing missing values using statistically sound methods." 
+    },
+    { 
+      title: "Feature Engineering", 
+      content: "Create new, meaningful features from existing ones to enhance the data's representational power. This involves transforming raw data into formats that better represent the underlying problem, such as creating interaction terms, polynomial features, or domain-specific indicators." 
+    },
+    { 
+      title: "Data Augmentation", 
+      content: "Artificially expand the dataset to introduce variations and improve model robustness. Techniques include generating synthetic samples, applying transformations, and leveraging domain knowledge to create realistic variations that help the model generalize better to unseen data." 
+    },
+  ];
 
-    animate();
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, []);
+  const features: Feature[] = [
+    {
+      title: "Advanced Data Filtering",
+      description: "Intelligently filter out irrelevant data to focus on the most valuable information for training.",
+      icon: <FunnelIcon className="h-10 w-10 text-primary" />,
+    },
+    {
+      title: "Contextual Analysis",
+      description: "Understand relationships between data points to preserve meaningful patterns during selection.",
+      icon: <MagnifyingGlassIcon className="h-10 w-10 text-primary" />,
+    },
+    {
+      title: "Adaptive Processing",
+      description: "Automatically adjust selection criteria based on data characteristics and model requirements.",
+      icon: <AdjustmentsHorizontalIcon className="h-10 w-10 text-primary" />,
+    },
+  ];
 
   // Add scroll animation effect using Intersection Observer
   useEffect(() => {
@@ -97,293 +148,330 @@ export function DataSelection(): JSX.Element {
   }, []);
 
   return (
-    <div className="data-selection-container">
-      {/* Hero Section with Particle Background */}
-      <div className="hero-section scroll-animate relative">
-        <canvas ref={canvasRef} className="absolute top-0 left-0 w-full h-full z-0" />
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 via-purple-500/20 to-pink-500/10 backdrop-blur-xl"></div>
-        <div className="container mx-auto text-center z-10 relative">
-          <h1 className="title">Data Selection</h1>
-          <p className="subtitle">
-            Transforming raw data into a refined, optimized resource for AI training.
-          </p>
-        </div>
-      </div>
+    <>
+      <Head>
+        <title>Data Selection | Glynac.AI</title>
+        <meta name="description" content="Transform raw data into a refined, optimized resource for AI training" />
+      </Head>
+      <div className="bg-background min-h-screen">
+        {/* Hero Section with Animation */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 2 }}
+          className="relative min-h-screen flex flex-col items-center justify-center text-center pt-32 pb-16 px-6 bg-primary text-primary-foreground overflow-hidden"
+        >
+          {/* Background gradient instead of particles */}
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-br from-primary/30 via-purple-500/20 to-accent/30 backdrop-blur-xl"
+            initial={{ y: -200 }}
+            animate={{ y: 200 }}
+            transition={{ repeat: Infinity, repeatType: "reverse", duration: 15, ease: "linear" }}
+          />
+          <motion.h1 
+            className="mb-8 font-extrabold text-5xl sm:text-6xl md:text-7xl tracking-tight relative z-10 text-white dark:text-white"
+          >
+            {["Data", "Selection", "Process"].map((word, index) => (
+              <motion.span
+                key={index}
+                initial={{ opacity: 0, y: 60 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.2, duration: 0.8, ease: "easeOut" }}
+                className="inline-block mr-3"
+              >
+                {word}
+              </motion.span>
+            ))}
+          </motion.h1>
+          <motion.div 
+            variants={fadeIn} 
+            initial="hidden" 
+            animate="visible" 
+            className="relative z-10 max-w-4xl"
+          >
+            <p className="text-lg sm:text-xl md:text-2xl font-light dark:text-white text-white">
+              Transforming raw data into a refined, optimized resource for AI training.
+            </p>
+          </motion.div>
+        </motion.div>
 
-      {/* Content Section */}
-      <div className="content">
         {/* Intro Section */}
-        <div className="intro-section scroll-animate">
-          <p className="intro">
-            The foundation of any successful AI model lies in the quality and relevance of its training data. While we are provided with a dataset, it's crucial to understand that this raw data is rarely, if ever, immediately usable. It represents the initial pool of information, a potential goldmine, but it requires longer processing before it can effectively shape the learning process. Data selection, therefore, is not merely about choosing a subset; it's about transforming the provided data into a refined, optimized resource for training.
-          </p>
-        </div>
-
-        {/* Image Section */}
-        <div className="image-section scroll-animate">
-          <div className="image-container">
-            <img src="/img/raw-data(1).webp" alt="Raw Data" className="image" />
-            <div className="image-caption">Raw Data</div>
+        <motion.section 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-24"
+        >
+          <div className="container mx-auto px-6">
+            <motion.div 
+              variants={itemVariants}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                The Foundation of AI Success
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                The foundation of any successful AI model lies in the quality and relevance of its training data. While we are provided with a dataset, it's crucial to understand that this raw data is rarely, if ever, immediately usable. It represents the initial pool of information, a potential goldmine, but it requires longer processing before it can effectively shape the learning process. Data selection, therefore, is not merely about choosing a subset; it's about transforming the provided data into a refined, optimized resource for training.
+              </p>
+            </motion.div>
           </div>
-          <div className="image-container">
-            <img src="/img/cleaned-data(2).webp" alt="Cleaned Data" className="image" />
-            <div className="image-caption">Cleaned Data</div>
+        </motion.section>
+
+        {/* Image Comparison Section */}
+        <motion.section 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-16 bg-muted"
+        >
+          <div className="container mx-auto px-6">
+            <motion.div 
+              variants={containerVariants}
+              className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16"
+            >
+              <motion.div 
+                variants={itemVariants}
+                whileHover={hoverEffect}
+                className="relative rounded-xl overflow-hidden border border-border shadow-md max-w-md"
+              >
+                <div className="relative pb-2">
+                  <Image
+                    src="/img/raw-data(1).webp"
+                    alt="Raw Data"
+                    width={400}
+                    height={300}
+                    className="w-full h-auto object-cover"
+                  />
+                  <div className="absolute bottom-0 w-full text-center py-2 bg-background/75 backdrop-blur-sm">
+                    <h3 className="font-semibold text-lg">Raw Data</h3>
+                  </div>
+                </div>
+              </motion.div>
+              
+              <motion.div 
+                initial={{ scale: 0, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.5 }}
+                className="flex items-center justify-center"
+              >
+                <ArrowsPointingOutIcon className="h-8 w-8 text-primary transform rotate-45" />
+              </motion.div>
+              
+              <motion.div 
+                variants={itemVariants}
+                whileHover={hoverEffect}
+                className="relative rounded-xl overflow-hidden border border-border shadow-md max-w-md"
+              >
+                <div className="relative pb-2">
+                  <Image
+                    src="/img/cleaned-data(2).webp"
+                    alt="Cleaned Data"
+                    width={400}
+                    height={300}
+                    className="w-full h-auto object-cover"
+                  />
+                  <div className="absolute bottom-0 w-full text-center py-2 bg-background/75 backdrop-blur-sm">
+                    <h3 className="font-semibold text-lg">Cleaned Data</h3>
+                  </div>
+                </div>
+              </motion.div>
+            </motion.div>
           </div>
-        </div>
+        </motion.section>
 
-        {/* Steps Section */}
-        <div className="steps-section scroll-animate">
-          <h2 className="section-title">Data Transformation Steps</h2>
-          <div className="steps-grid">
-            {/* Step 1: Exploratory Analysis */}
-            <div className="step">
-              <div className="step-icon">1</div>
-              <img
-                src="/img/Exploratory-analysis.webp"
-                alt="Exploratory Analysis"
-                className="step-image"
-              />
-              <h3>Exploratory Analysis</h3>
-              <p>Understand the data's structure, identify patterns, inconsistencies, and potential biases.</p>
-            </div>
+        {/* Features Section */}
+        <motion.section 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-24"
+        >
+          <div className="container mx-auto px-6">
+            <motion.div 
+              variants={itemVariants}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Advanced Selection Capabilities
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Our platform provides powerful tools to transform raw data into high-quality training sets.
+              </p>
+            </motion.div>
+            
+            <motion.div 
+              variants={containerVariants}
+              className="grid grid-cols-1 md:grid-cols-3 gap-8"
+            >
+              {features.map((feature, index) => (
+                <FeatureCard key={index} {...feature} />
+              ))}
+            </motion.div>
+          </div>
+        </motion.section>
 
-            {/* Step 2: Data Cleaning */}
-            <div className="step">
-              <div className="step-icon">2</div>
-              <img
-                src="/img/Data-cleaning.webp"
-                alt="Data Cleaning"
-                className="step-image"
-              />
-              <h3>Data Cleaning</h3>
-              <p>Rectify errors, handle missing values, and address outliers that could skew the model's learning.</p>
-            </div>
-
-            {/* Step 3: Feature Engineering */}
-            <div className="step">
-              <div className="step-icon">3</div>
-              <img
-                src="/img/feature-engineering(4).webp"
-                alt="Feature Engineering"
-                className="step-image"
-              />
-              <h3>Feature Engineering</h3>
-              <p>Create new, meaningful features from existing ones to enhance the data's representational power.</p>
-            </div>
-
-            {/* Step 4: Data Augmentation */}
-            <div className="step">
-              <div className="step-icon">4</div>
-              <img
-                src="/img/data-augmentation(5).webp"
-                alt="Data Augmentation"
-                className="step-image"
-              />
-              <h3>Data Augmentation</h3>
-              <p>Artificially expand the dataset to introduce variations and improve model robustness.</p>
+        {/* Data Transformation Steps with Tabs */}
+        <motion.section 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-24 bg-background"
+        >
+          <div className="container mx-auto px-6">
+            <motion.div 
+              variants={itemVariants}
+              className="text-center mb-16"
+            >
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Data Transformation Process
+              </h2>
+              <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
+                Our comprehensive approach ensures data is properly prepared for optimal AI model performance.
+              </p>
+            </motion.div>
+            
+            <div className="max-w-5xl mx-auto">
+              <motion.div 
+                variants={containerVariants}
+                className="flex flex-wrap justify-center gap-2 mb-8"
+              >
+                {dataTransformationSteps.map((tab, index) => (
+                  <motion.button
+                    key={index}
+                    variants={itemVariants}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`px-4 py-2 rounded-md transition-colors ${
+                      activeTab === index 
+                        ? 'bg-primary text-primary-foreground'
+                        : 'bg-secondary text-secondary-foreground hover:bg-secondary/80'
+                    }`}
+                    onClick={() => setActiveTab(index)}
+                  >
+                    {tab.title}
+                  </motion.button>
+                ))}
+              </motion.div>
+              
+              <motion.div 
+                variants={itemVariants}
+                className="rounded-lg border border-border bg-card p-6 shadow-sm"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5 }}
+                key={activeTab} // Force re-render animation on tab change
+              >
+                <div className="text-card-foreground">
+                  {dataTransformationSteps[activeTab].content}
+                </div>
+              </motion.div>
             </div>
           </div>
-        </div>
+        </motion.section>
+
+        {/* Visualization Section */}
+        <motion.section 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-24 bg-muted"
+        >
+          <div className="container mx-auto px-6">
+            <motion.div 
+              variants={containerVariants}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+            >
+              {[
+                { 
+                  title: "Exploratory Analysis", 
+                  image: "/img/Exploratory-analysis.webp",
+                  desc: "Understand the data's structure, identify patterns, inconsistencies, and potential biases."
+                },
+                { 
+                  title: "Data Cleaning", 
+                  image: "/img/Data-cleaning.webp",
+                  desc: "Rectify errors, handle missing values, and address outliers that could skew the model's learning."
+                },
+                { 
+                  title: "Feature Engineering", 
+                  image: "/img/feature-engineering(4).webp",
+                  desc: "Create new, meaningful features from existing ones to enhance the data's representational power."
+                },
+                { 
+                  title: "Data Augmentation", 
+                  image: "/img/data-augmentation(5).webp",
+                  desc: "Artificially expand the dataset to introduce variations and improve model robustness."
+                }
+              ].map((step, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  whileHover={{ scale: 1.05, y: -10 }}
+                  className="bg-card rounded-xl overflow-hidden border border-border shadow-sm"
+                >
+                  <div className="relative h-48">
+                    <Image
+                      src={step.image}
+                      alt={step.title}
+                      fill
+                      className="object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent flex items-end">
+                      <div className="p-4">
+                        <div className="inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary text-primary-foreground font-bold text-sm mb-2">
+                          {index + 1}
+                        </div>
+                        <h3 className="text-white text-xl font-bold">{step.title}</h3>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <p className="text-muted-foreground">{step.desc}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </motion.section>
 
         {/* Conclusion Section */}
-        <div className="conclusion-section scroll-animate">
-          <p className="conclusion">
-            In essence, data selection is a comprehensive, iterative process of refinement, where the raw data is greatly sculpted into a training dataset that empowers the AI to learn effectively and achieve its intended purpose. It's a journey from raw material to a polished training resource, demanding both technical expertise and a deep understanding of the problem domain.
-          </p>
-        </div>
+        <motion.section 
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="py-20 bg-primary text-primary-foreground"
+        >
+          <div className="container mx-auto px-6 text-center">
+            <motion.h2 
+              variants={itemVariants}
+              className="text-3xl md:text-4xl font-bold mb-6"
+            >
+              Transform Your AI Training Data
+            </motion.h2>
+            <motion.p 
+              variants={itemVariants}
+              className="text-lg text-primary-foreground/80 max-w-3xl mx-auto mb-10"
+            >
+              In essence, data selection is a comprehensive, iterative process of refinement, where the raw data is greatly sculpted into a training dataset that empowers the AI to learn effectively and achieve its intended purpose. It's a journey from raw material to a polished training resource, demanding both technical expertise and a deep understanding of the problem domain.
+            </motion.p>
+            <motion.button 
+              variants={itemVariants}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 rounded-md bg-background text-foreground hover:bg-background/90 font-medium"
+            >
+              Get Started
+            </motion.button>
+          </div>
+        </motion.section>
       </div>
-
-      {/* Styles */}
-      <style jsx>{`
-        /* General Styling */
-        .data-selection-container {
-          font-family: 'Inter', sans-serif;
-          color: #333; /* Default text color */
-          background: #ffffff; /* White background for the rest of the page */
-        }
-
-        /* Hero Section */
-        .hero-section {
-          position: relative;
-          padding: 6rem 2rem;
-          text-align: center;
-          overflow: hidden;
-          background:rgb(21, 12, 73); /* Dark purple background for the heading */
-        }
-
-        .title {
-          font-size: 3.5rem;
-          font-weight: 700;
-          margin-bottom: 1rem;
-          position: relative;
-          z-index: 1;
-          color: #ffffff; /* White text for the heading */
-        }
-
-        .subtitle {
-          font-size: 1.5rem;
-          font-weight: 400;
-          opacity: 0.9;
-          position: relative;
-          z-index: 1;
-          color: #ffffff; /* White text for the heading */
-        }
-
-        /* Intro Section */
-        .intro-section {
-          max-width: 800px;
-          margin: 4rem auto;
-          padding: 0 2rem;
-          text-align: center;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .intro-section.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .intro {
-          font-size: 1.1rem;
-          line-height: 1.8;
-          color: #555; /* Dark gray text for readability */
-        }
-
-        /* Image Section */
-        .image-section {
-          display: flex;
-          justify-content: center;
-          gap: 2rem;
-          margin: 4rem 0;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .image-section.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .image-container {
-          text-align: center;
-        }
-
-        .image {
-          width: 300px;
-          height: 200px;
-          border-radius: 12px;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-          transition: transform 0.3s ease;
-        }
-
-        .image:hover {
-          transform: scale(1.05);
-        }
-
-        .image-caption {
-          margin-top: 1rem;
-          font-size: 1rem;
-          color: #666; /* Gray for captions */
-        }
-
-        /* Steps Section */
-        .steps-section {
-          background:rgba(47, 72, 95, 0.79); 
-          padding: 4rem 2rem;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.8s ease, transform 0.8s ease;
-          border-radius: 12px;
-        }
-
-        .steps-section.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .section-title {
-          text-align: center;
-          font-size: 2.5rem;
-          font-weight: 700;
-          margin-bottom: 3rem;
-          color:rgb(248, 244, 244); /* Black for section title */
-        }
-
-        .steps-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: 2rem;
-          max-width: 1200px;
-          margin: 0 auto;
-        }
-
-        .step {
-          background:rgb(255, 255, 255); /* White background for steps */
-          padding: 2rem;
-          border-radius: 12px;
-          text-align: center;
-          transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .step:hover {
-          transform: translateY(-10px);
-          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-        }
-
-        .step-icon {
-          font-size: 1.5rem;
-          font-weight: 700;
-          color:rgb(37, 69, 199); /* Blue for icons */
-          margin-bottom: 1rem;
-        }
-
-        .step-image {
-          width: 100%;
-          height: 150px;
-          object-fit: cover;
-          border-radius: 8px;
-          margin-bottom: 1rem;
-        }
-
-        .step h3 {
-          font-size: 1.5rem;
-          font-weight: 600;
-          margin-bottom: 1rem;
-          color: #2c3e50; /* Dark blue for step titles */
-        }
-
-        .step p {
-          font-size: 1rem;
-          line-height: 1.6;
-          color: #666; /* Gray for step descriptions */
-        }
-
-        /* Conclusion Section */
-        .conclusion-section {
-          max-width: 800px;
-          margin: 4rem auto;
-          padding: 0 2rem;
-          text-align: center;
-          opacity: 0;
-          transform: translateY(20px);
-          transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .conclusion-section.visible {
-          opacity: 1;
-          transform: translateY(0);
-        }
-
-        .conclusion {
-          font-size: 1.1rem;
-          line-height: 1.8;
-          color: #555; /* Dark gray for conclusion text */
-        }
-      `}</style>
-    </div>
+    </>
   );
 }
 

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type { ReactNode } from "react"
-import ChatBot from "./chatbot"
+import type { ReactNode } from "react";
+import ChatBot from "./ChatBot";
 
 interface ChatBotProviderProps {
-  children: ReactNode
+  children: ReactNode;
 }
 
 const ChatBotProvider = ({ children }: ChatBotProviderProps) => {
@@ -13,8 +13,7 @@ const ChatBotProvider = ({ children }: ChatBotProviderProps) => {
       {children}
       <ChatBot />
     </>
-  )
-}
+  );
+};
 
-export default ChatBotProvider
-
+export default ChatBotProvider;

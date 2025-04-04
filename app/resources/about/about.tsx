@@ -1,22 +1,60 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { Typography, Card, CardBody, IconButton } from "@material-tailwind/react";
-import { FingerPrintIcon, SpeakerWaveIcon, SpeakerXMarkIcon, PlayIcon, PauseIcon } from "@heroicons/react/24/solid";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
+import Head from "next/head";
+import { 
+  FingerPrintIcon, 
+  PlayIcon, 
+  PauseIcon, 
+  SpeakerWaveIcon, 
+  SpeakerXMarkIcon,
+  GlobeAltIcon,
+  BriefcaseIcon,
+  UserGroupIcon,
+  BuildingOffice2Icon
+} from "@heroicons/react/24/outline";
 
 // Define leadership item interface
 interface LeadershipItem {
   src: string;
   name: string;
+  role: string;
   description: string;
 }
 
-export function About(): JSX.Element {
+// Animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.2, delayChildren: 0.3 }
+  }
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 50, scale: 0.9 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.8, ease: "easeOut", type: "spring", stiffness: 100 }
+  }
+};
+
+const staggerItems = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+export function About(): React.ReactElement {
   const { scrollYProgress } = useScroll();
   const scale = useTransform(scrollYProgress, [0, 1], [1, 1.15]);
-  const opacity = useTransform(scrollYProgress, [0, 1], [1, 0.8]);
+  const opacity = useTransform(scrollYProgress, [0, 0.8], [1, 0.6]);
 
   // Video player state and refs
   const videoRef = useRef<HTMLVideoElement | null>(null);
@@ -90,248 +128,397 @@ export function About(): JSX.Element {
 
   // Leadership data
   const leadershipData: LeadershipItem[] = [
-    { src: "/img/leadership1.webp", name: "Andrew Rosenthal", description: "CEO & Founder with 20+ years in AI analytics." },
-    { src: "/img/leadership2.webp", name: "Bo Shi", description: "CFO mastering financial strategy and growth." },
-    { src: "/img/leadership3.webp", name: "Tanuj Sharma", description: "CTO pioneering scalable tech innovations." },
+    { 
+      src: "/img/leadership1.webp", 
+      name: "Andrew Rosenthal", 
+      role: "CEO & Founder",
+      description: "20+ years in AI analytics and enterprise leadership. Pioneering the future of workplace analytics." 
+    },
+    { 
+      src: "/img/leadership2.webp", 
+      name: "Bo Shi", 
+      role: "Chief Financial Officer",
+      description: "Financial strategist with expertise in scaling AI startups and maximizing sustainable growth." 
+    },
+    { 
+      src: "/img/leadership3.webp", 
+      name: "Alisa Kolodizer", 
+      role: "Finance Director",
+      description: "With over 10 years of experience in finance, consulting, and improving client experience through emerging technologies." 
+    },
+    { 
+      src: "/img/leadership4.webp", 
+      name: "Daniel Byalsky", 
+      role: "AI Advisor",
+      description: "With over 10 years of experience in finance, consulting, and improving client experience through emerging technologies." 
+    },
+  ];
+
+  // Office locations
+  const locations = [
+    { city: "Chicago", role: "Headquarters", flag: "🇺🇸" },
+    { city: "India", role: "Sales & Development", flag: "🇮🇳" },
+    { city: "Israel", role: "Development", flag: "🇮🇱" },
+    { city: "Beijing", role: "Sales", flag: "🇨🇳" },
+    { city: "London", role: "Sales", flag: "🇬🇧" },
   ];
 
   return (
     <>
-      {/* Background Wrapper */}
+      <Head>
+        <title>About Glynac.AI | Transforming Workplace Communication</title>
+        <meta name="description" content="Learn about Glynac.AI's mission to revolutionize hybrid and remote work with AI-powered communication analytics" />
+      </Head>
+
+      {/* Hero Section */}
       <motion.div
-        className="relative flex min-h-screen content-center items-center justify-center pt-16 pb-32 overflow-hidden bg-gradient-to-br from-[#1E3A8A] to-[#3B82F6]"
+        className="relative min-h-screen flex flex-col items-center justify-center pt-32 pb-16 px-6 bg-primary text-primary-foreground overflow-hidden"
         style={{ scale, opacity }}
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1.5, ease: "easeOut" }}
       >
-        <video
-          autoPlay
-          muted
-          loop
-          className="absolute top-0 left-0 w-full h-full object-cover z-0 opacity-30"
-        >
-          <source src="/videos/bg-video.mp4" type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <div className="absolute top-0 h-full w-full bg-gradient-to-b from-[#1E3A8A]/20 to-black/60 z-10" />
-        <div className="max-w-8xl container relative mx-auto text-center z-20">
-          <motion.div
-            initial={{ y: -100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ duration: 1.2, delay: 0.5, type: "spring" }}
+        {/* Background video with overlay */}
+        <div className="absolute inset-0 overflow-hidden">
+          <video
+            autoPlay
+            muted
+            loop
+            className="absolute top-0 left-0 w-full h-full object-cover z-0 opacity-30"
           >
-            <Typography
-              variant="h1"
-              className="mb-6 font-black text-6xl md:text-8xl lg:text-9xl text-white drop-shadow-lg tracking-wide uppercase"
-            >
-              About Us
-            </Typography>
-            <Typography
-              variant="lead"
-              className="opacity-90 text-lg md:text-2xl lg:text-3xl text-[#E0F2FE] font-light tracking-wider"
-            >
-              At Glynac.ai, we revolutionize the hybrid and remote work landscape with cutting-edge AI solutions.
-            </Typography>
-          </motion.div>
+            <source src="/videos/bg-video.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/50 via-background/30 to-accent/50 backdrop-blur-sm z-10" />
         </div>
+
+        {/* Hero content */}
+        <motion.div 
+          className="container mx-auto text-center relative z-20"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1.2, delay: 0.5 }}
+        >
+          <motion.h1 
+            className="mb-6 font-black text-5xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-white"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.2 }}
+          >
+            About Us
+          </motion.h1>
+          <motion.p 
+            className="text-lg sm:text-xl md:text-2xl font-light text-white opacity-90 max-w-3xl mx-auto"
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.4 }}
+          >
+            At Glynac.ai, we revolutionize the hybrid and remote work landscape with cutting-edge AI solutions.
+          </motion.p>
+        </motion.div>
       </motion.div>
 
-      {/* Content Section */}
-      <section className="-mt-32 bg-[#F1F5F9] px-4 pb-20 pt-4">
-        <div className="container mx-auto max-w-6xl">
+      {/* Mission Card Section */}
+      <section className="-mt-32 bg-background px-4 pb-16 pt-4">
+        <div className="container mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.8 }}
             viewport={{ once: true }}
-            className="glassmorphism-extreme bg-[#1E3A8A]/10 backdrop-blur-lg p-6 rounded-xl border border-[#3B82F6]/30"
+            className="max-w-4xl mx-auto"
           >
-            <Card className="shadow-2xl border-[#3B82F6] bg-white/95 p-8 rounded-xl transform transition-all duration-700 hover:scale-110 hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] hover:rotate-3">
-              <CardBody>
-                <Typography
-                  variant="h4"
-                  className="font-bold text-[#1E3A8A] flex items-center gap-3 text-3xl tracking-tight"
-                >
-                  <FingerPrintIcon className="h-8 w-8 text-[#3B82F6] animate-pulse" />
-                  Our Mission
-                </Typography>
-                <Typography className="mt-4 font-medium text-[#64748B] text-lg leading-relaxed">
-                  Traditional methods fall short in today's dynamic workplaces. We leverage AI to decode communication patterns, uniting remote and office teams with precision and insight.
-                </Typography>
-              </CardBody>
-            </Card>
-          </motion.div>
-
-          <div className="flex flex-col md:flex-row max-w-4xl mx-auto mt-12 gap-8">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.5, type: "spring" }}
-              viewport={{ once: true }}
-              className="flex-1 glassmorphism-extreme bg-[#1E3A8A]/10 backdrop-blur-md p-6 rounded-xl border border-[#3B82F6]/40 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:-rotate-2"
-            >
-              <Typography variant="h2" className="text-4xl font-extrabold text-[#1E3A8A] tracking-tight">
-                Letters To Users
-              </Typography>
-              <Typography className="mt-4 font-normal text-[#64748B] text-lg leading-loose">
-                Today's workplace thrives on digital conversations. Our AI platform harnesses Large Language Models to process vast communication data from Slack, Teams, and more—delivering real-time, actionable insights.
-              </Typography>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1, delay: 0.5, type: "spring" }}
-              viewport={{ once: true }}
-              className="flex-1 glassmorphism-extreme bg-[#1E3A8A]/10 backdrop-blur-md p-6 rounded-xl border border-[#3B82F6]/40 transition-all duration-500 hover:scale-105 hover:shadow-[0_0_30px_rgba(59,130,246,0.4)] hover:rotate-2"
-            >
-              <Typography variant="h2" className="text-4xl font-extrabold text-[#1E3A8A] tracking-tight">
-                Our Solutions
-              </Typography>
-              <Typography className="mt-4 font-normal text-[#64748B] text-lg leading-loose">
-                Tailored for every business, our scalable AI tools deliver deep analytics and sentiment tracking—empowering smarter decisions and stronger teams.
-              </Typography>
-            </motion.div>
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1.2, delay: 0.7, ease: "easeOut" }}
-            viewport={{ once: true }}
-            className="max-w-4xl mx-auto mt-16 glassmorphism-extreme bg-[#1E3A8A]/10 backdrop-blur-lg p-8 rounded-xl border border-[#3B82F6]/30 transition-all duration-700 hover:scale-105 hover:shadow-[0_0_50px_rgba(59,130,246,0.3)]"
-          >
-            <Typography className="text-3xl font-semibold text-[#1E3A8A] text-center leading-relaxed">
-              Welcome to Glynac.ai—where AI transforms hybrid work. We unite teams, boost productivity, and prioritize sustainability and collaboration.
-              <br /><br />
-              Our innovative tools drive meaningful change, optimize communication, and enhance well-being. Join us to thrive in the future of work.
-            </Typography>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
-            viewport={{ once: true }}
-            className="glassmorphism-extreme bg-[#1E3A8A]/10 backdrop-blur-lg p-6 rounded-xl mt-12 max-w-4xl mx-auto border border-[#3B82F6]/30 transition-all duration-700 hover:scale-105 hover:shadow-[0_0_40px_rgba(59,130,246,0.5)]"
-          >
-            <Card className="bg-white/95 p-8 rounded-xl shadow-2xl">
-              <CardBody>
-                <Typography variant="h4" className="font-bold text-[#1E3A8A] text-center text-3xl tracking-wide">
-                  Locations
-                </Typography>
-                <Typography className="mt-6 font-medium text-[#64748B] text-center text-lg">
-                  <span className="block text-[#3B82F6] font-semibold">Headquarters:</span> Chicago
-                  <br /><br />
-                  <span className="block text-[#3B82F6] font-semibold">Sales & Development:</span> India
-                  <br /><br />
-                  <span className="block text-[#3B82F6] font-semibold">Development:</span> Israel
-                  <br /><br />
-                  <span className="block text-[#3B82F6] font-semibold">Sales:</span> Beijing, London
-                </Typography>
-              </CardBody>
-            </Card>
-          </motion.div>
-
-          {/* Video Section - Added from the second code */}
-          <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.9, ease: "easeOut" }}
-            viewport={{ once: true }}
-          >
-            <div className="max-w-4xl mx-auto glassmorphism-extreme bg-[#1E3A8A]/10 backdrop-blur-lg p-6 rounded-xl mt-12 relative flex items-center justify-center py-19 bg-black rounded-xl border border-[#3B82F6]/30 transition-all duration-700 hover:shadow-[0_0_50px_rgba(59,130,246,0.3)]">
-              <video
-                ref={videoRef}
-                className="rounded-xl w-full h-full object-cover"
-                src="/Video/Artificial Intelligence in 2 Minutes _ What is Artificial Intelligence_ _ Edureka(720P_HD).mp4"
-                // Removed type attribute as it's not valid for video element in React/JSX
-                autoPlay
-                loop
-                muted={isMuted}
-              />
-      
-              {/* Video Controls */}
-              <div className="absolute bottom-3 left-6 h-20 flex gap-4">
-                <div className="flex items-center justify-center w-10 h-12 rounded-full bg-gray bg-opacity-50 p-2">
-                  <IconButton onClick={handlePlayPause} className="w-7 h-7 text-white glassmorphism-extreme bg-black bg-opacity-70">
-                    {isPlaying ? (
-                      <PauseIcon className="w-4 h-4" />
-                    ) : (
-                      <PlayIcon className="w-4 h-4" />
-                    )}
-                  </IconButton>
-                </div>
-                <div className="flex items-center justify-center w-10 h-12 rounded-full bg-gray bg-opacity-50 p-2">
-                  <IconButton onClick={handleMuteUnmute} className="w-7 h-7 text-white glassmorphism-extreme bg-black bg-opacity-70">
-                    {isMuted ? (
-                      <SpeakerXMarkIcon className="w-4 h-4" />
-                    ) : (
-                      <SpeakerWaveIcon className="w-4 h-4" />
-                    )}
-                  </IconButton>
-                </div>
-              </div>
-      
-              {/* Range Bar */}
-              <div
-                className={`absolute bottom-1 left-0 w-full px-6 transition-all duration-300 ${isHovered ? "opacity-100" : "opacity-0"}`}
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+            <div className="bg-primary/5 backdrop-blur-lg p-6 rounded-xl border border-primary/20 shadow-lg">
+              <motion.div 
+                className="rounded-xl bg-card p-8 shadow-xl border border-border"
+                whileHover={{ scale: 1.02, rotate: 0.5 }}
+                transition={{ duration: 0.3 }}
               >
-                <input
-                  type="range"
-                  min="0"
-                  max={duration || 1}
-                  step="0.1"
-                  value={currentTime}
-                  onChange={handleSeek}
-                  className="w-full h-7 sm:h-10 md:h-12 bg-gray-400 rounded-lg transition-all duration-300"
-                  style={{ zIndex: 100 }}
-                />
-              </div>
+                <div className="flex items-center gap-3 mb-4">
+                  <FingerPrintIcon className="h-8 w-8 text-primary" />
+                  <h2 className="text-3xl font-bold text-foreground">Our Mission</h2>
+                </div>
+                <p className="text-muted-foreground text-lg leading-relaxed">
+                  Traditional methods fall short in today's dynamic workplaces. We leverage AI to decode communication patterns, uniting remote and office teams with precision and insight. Our goal is to transform how organizations understand and optimize workplace communication in the hybrid era.
+                </p>
+              </motion.div>
             </div>
           </motion.div>
         </div>
       </section>
 
-      {/* Leadership Section */}
-      <section className="mt-20 bg-gradient-to-b from-[#F1F5F9] to-[#E0F2FE] py-24">
-        <Typography variant="h2" className="text-5xl font-extrabold text-[#1E3A8A] text-center mb-12 tracking-wider uppercase">
-          Our Leadership
-        </Typography>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl mx-auto">
-          {leadershipData.map(({ src, name, description }, index) => (
+      {/* Split Info Cards */}
+      <section className="py-16 bg-background">
+        <div className="container mx-auto px-6">
+          <motion.div 
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+          >
             <motion.div
-              initial={{ opacity: 0, y: 50, rotate: -10 }}
-              whileInView={{ opacity: 1, y: 0, rotate: 0 }}
-              transition={{ duration: 1, delay: 0.3 * (index + 1), type: "spring" }}
-              viewport={{ once: true }}
-              key={index}
-              className="glassmorphism-extreme bg-[#1E3A8A]/10 backdrop-blur-md p-6 rounded-xl border border-[#3B82F6]/40 transition-all duration-500 hover:scale-110 hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] hover:rotate-3"
+              variants={itemVariants}
+              className="rounded-xl border border-border bg-card p-8 shadow-md hover:shadow-lg transition-all"
+              whileHover={{ scale: 1.03, rotate: -1 }}
             >
-              <Card className="shadow-2xl bg-white/95 rounded-xl overflow-hidden">
-                <motion.div whileHover={{ scale: 1.25 }}>
-                  <Image
-                    src={src}
-                    alt={name}
-                    width={400}
-                    height={300}
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                    className="h-64 w-full object-cover rounded-t-xl transition-transform duration-500"
-                  />
-                </motion.div>
-                <CardBody className="text-center">
-                  <Typography variant="h5" className="text-[#1E3A8A] font-bold text-xl tracking-wide">
-                    {name}
-                  </Typography>
-                  <Typography className="text-[#64748B] mt-2 text-lg font-medium">
-                    {description}
-                  </Typography>
-                </CardBody>
-              </Card>
+              <h3 className="text-2xl font-bold text-foreground mb-4">Letters To Users</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Today's workplace thrives on digital conversations. Our AI platform harnesses Large Language Models to process vast communication data from Slack, Teams, and more—delivering real-time, actionable insights that transform how organizations understand their internal dynamics.
+              </p>
             </motion.div>
-          ))}
+            
+            <motion.div
+              variants={itemVariants}
+              className="rounded-xl border border-border bg-card p-8 shadow-md hover:shadow-lg transition-all"
+              whileHover={{ scale: 1.03, rotate: 1 }}
+            >
+              <h3 className="text-2xl font-bold text-foreground mb-4">Our Solutions</h3>
+              <p className="text-muted-foreground leading-relaxed">
+                Tailored for every business, our scalable AI tools deliver deep analytics and sentiment tracking—empowering smarter decisions and stronger teams. We build intelligent systems that adapt to your organization's unique communication patterns and needs.
+              </p>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Values Statement */}
+      <section className="py-24 bg-muted">
+        <div className="container mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="max-w-4xl mx-auto text-center"
+          >
+            <h2 className="text-3xl md:text-4xl font-bold mb-10 text-foreground">
+              Our Values & Vision
+            </h2>
+            <motion.p 
+              className="text-xl text-foreground leading-relaxed"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 1 }}
+              viewport={{ once: true }}
+            >
+              Welcome to Glynac.ai—where AI transforms hybrid work. We unite teams, boost productivity, and prioritize sustainability and collaboration.
+              <br /><br />
+              Our innovative tools drive meaningful change, optimize communication, and enhance well-being. Join us to thrive in the future of work.
+            </motion.p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Video Section */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-6">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            className="max-w-4xl mx-auto"
+          >
+            <motion.h2 
+              variants={itemVariants}
+              className="text-3xl md:text-4xl font-bold mb-10 text-center text-foreground"
+            >
+              See Our Vision in Action
+            </motion.h2>
+            
+            <motion.div 
+              variants={itemVariants}
+              className="relative rounded-xl overflow-hidden shadow-2xl border border-border"
+              onMouseEnter={() => setIsHovered(true)}
+              onMouseLeave={() => setIsHovered(false)}
+            >
+              <video
+                ref={videoRef}
+                className="w-full aspect-video object-cover"
+                src="/Video/Artificial Intelligence in 2 Minutes _ What is Artificial Intelligence_ _ Edureka(720P_HD).mp4"
+                autoPlay
+                loop
+                muted={isMuted}
+              />
+              
+              {/* Video Controls */}
+              <div className={`absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/80 to-transparent p-4 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+                <div className="flex items-center gap-4 mb-3">
+                  <button 
+                    onClick={handlePlayPause}
+                    className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors"
+                  >
+                    {isPlaying ? (
+                      <PauseIcon className="w-5 h-5 text-white" />
+                    ) : (
+                      <PlayIcon className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+                  
+                  <button 
+                    onClick={handleMuteUnmute}
+                    className="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center hover:bg-white/30 transition-colors"
+                  >
+                    {isMuted ? (
+                      <SpeakerXMarkIcon className="w-5 h-5 text-white" />
+                    ) : (
+                      <SpeakerWaveIcon className="w-5 h-5 text-white" />
+                    )}
+                  </button>
+                  
+                  <div className="relative flex-1 h-2 bg-white/20 rounded-full overflow-hidden">
+                    <input
+                      type="range"
+                      min="0"
+                      max={duration || 1}
+                      step="0.1"
+                      value={currentTime}
+                      onChange={handleSeek}
+                      className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+                    />
+                    <div 
+                      className="h-full bg-primary rounded-full"
+                      style={{ width: `${(currentTime / (duration || 1)) * 100}%` }}
+                    />
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Locations Section */}
+      <section className="py-24 bg-muted">
+        <div className="container mx-auto px-6">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <motion.h2 
+              variants={itemVariants}
+              className="text-3xl md:text-4xl font-bold mb-12 text-center text-foreground"
+            >
+              Global Presence
+            </motion.h2>
+            
+            <motion.div 
+              variants={staggerItems}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-5xl mx-auto"
+            >
+              {locations.map((location, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  whileHover={{ y: -10, scale: 1.05 }}
+                  className="bg-card rounded-xl p-6 border border-border shadow-md text-center"
+                >
+                  <span className="text-5xl mb-4 block">{location.flag}</span>
+                  <h3 className="text-xl font-bold text-foreground">{location.city}</h3>
+                  <p className="text-muted-foreground mt-2">{location.role}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Leadership Section */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-6">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+          >
+            <motion.h2 
+              variants={itemVariants}
+              className="text-3xl md:text-4xl font-bold mb-12 text-center text-foreground"
+            >
+              Our Leadership
+            </motion.h2>
+            
+            <motion.div 
+              variants={containerVariants}
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto"
+            >
+              {leadershipData.map((leader, index) => (
+                <motion.div
+                  key={index}
+                  variants={itemVariants}
+                  whileHover={{ 
+                    y: -10, 
+                    scale: 1.03,
+                    transition: { duration: 0.3 }
+                  }}
+                  className="bg-card rounded-xl overflow-hidden border border-border shadow-md"
+                >
+                  <div className="relative h-72 overflow-hidden">
+                    <Image
+                      src={leader.src}
+                      alt={leader.name}
+                      fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                      className="object-cover transition-transform duration-500 hover:scale-110"
+                      style={{ objectPosition: "center top" }}
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h3 className="text-xl font-bold text-foreground">{leader.name}</h3>
+                    <p className="text-primary font-medium mt-1">{leader.role}</p>
+                    <p className="text-muted-foreground mt-3">{leader.description}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 bg-primary text-primary-foreground">
+        <div className="container mx-auto px-6 text-center">
+          <motion.h2 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-3xl md:text-4xl font-bold mb-6"
+          >
+            Join Us in Transforming Workplace Communication
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            viewport={{ once: true }}
+            className="text-lg text-primary-foreground/80 max-w-3xl mx-auto mb-10"
+          >
+            Discover how our AI-powered solutions can enhance your organization's communication, collaboration, and performance in today's hybrid work environment.
+          </motion.p>
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            className="flex flex-wrap justify-center gap-4"
+          >
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 rounded-md bg-background text-foreground hover:bg-background/90 font-medium"
+            >
+              Contact Us
+            </motion.button>
+            <motion.button 
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="px-6 py-3 rounded-md bg-transparent border border-background/70 text-background hover:bg-background/10 font-medium"
+            >
+              Learn More
+            </motion.button>
+          </motion.div>
         </div>
       </section>
     </>

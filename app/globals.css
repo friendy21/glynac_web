@@ -66,6 +66,7 @@
   }
 }
 
+
 @layer base {
   * {
     @apply border-border;
@@ -73,6 +74,17 @@
   body {
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+  
+  /* Improved theme transitions */
+  body, 
+  div, 
+  section, 
+  table,
+  th,
+  td,
+  button {
+    @apply transition-colors duration-300;
   }
 }
 
@@ -104,7 +116,7 @@
   height: 2px;
   bottom: -2px;
   left: 0;
-  background-color: #1e90ff;
+  background-color: hsl(var(--primary));
   transition: width 0.3s ease;
 }
 
@@ -144,12 +156,16 @@
   }
 }
 
-/* Gradient text */
+/* Gradient text - updated to use theme variables */
 .gradient-text {
-  background: linear-gradient(90deg, #87ceeb, #1e90ff);
+  background: linear-gradient(90deg, hsl(var(--primary) / 0.8), hsl(var(--primary)));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+.dark .gradient-text {
+  background: linear-gradient(90deg, hsl(var(--primary) / 0.7), hsl(var(--primary)));
 }
 
 /* Chatbot Styles */
@@ -164,20 +180,16 @@
 }
 
 .chat-message-user {
-  background: linear-gradient(90deg, #87ceeb, #1e90ff);
-  color: white;
+  background: linear-gradient(90deg, hsl(var(--primary) / 0.8), hsl(var(--primary)));
+  color: hsl(var(--primary-foreground));
   border-radius: 18px 18px 0 18px;
   align-self: flex-end;
 }
 
 .chat-message-bot {
-  background: #f0f0f0;
+  background: hsl(var(--muted));
   border-radius: 18px 18px 18px 0;
   align-self: flex-start;
-}
-
-.dark .chat-message-bot {
-  background: #2a2a2a;
 }
 
 .chat-typing-indicator {
@@ -190,7 +202,7 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: #888;
+  background-color: hsl(var(--muted-foreground));
   animation: pulse 1.5s infinite;
 }
 
@@ -200,4 +212,92 @@
 
 .chat-typing-dot:nth-child(3) {
   animation-delay: 0.4s;
+}
+
+/* Enhanced professional utilities */
+@layer utilities {
+  .shadow-inner-custom {
+    box-shadow: inset 0 0 50px 100px rgba(0, 0, 0, 0.2);
+  }
+  
+  .theme-aware-invert {
+    @apply invert-0 dark:invert;
+  }
+
+  .animated-border {
+    @apply border border-border/20 hover:border-primary/30 transition-all;
+  }
+
+  .animated-bg {
+    @apply bg-background/80 dark:bg-background/90 backdrop-blur-md;
+  }
+
+  .animate-theme-transition {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+  
+  /* Professional card styles */
+  .card-hover {
+    @apply hover:shadow-md hover:border-primary/20 dark:hover:border-primary/30 transform hover:-translate-y-1 transition-all duration-300;
+  }
+  
+  /* Table styling */
+  .table-professional {
+    @apply w-full border-collapse;
+  }
+  
+  .table-professional th {
+    @apply bg-primary/90 dark:bg-primary/80 text-primary-foreground px-4 py-3 text-sm font-medium;
+  }
+  
+  .table-professional td {
+    @apply px-4 py-3 border-b border-border/20 dark:border-border/10 text-sm;
+  }
+  
+  .table-professional tr:nth-child(even) {
+    @apply bg-muted/50 dark:bg-muted/30;
+  }
+  
+  .table-professional tr:hover {
+    @apply bg-accent/30 dark:bg-accent/10;
+  }
+  
+  /* Button styles */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground hover:bg-primary/90 px-6 py-2 rounded-md shadow-sm font-medium transition-all;
+  }
+  
+  .btn-secondary {
+    @apply bg-secondary text-secondary-foreground hover:bg-secondary/90 px-6 py-2 rounded-md shadow-sm font-medium transition-all;
+  }
+  
+  .btn-outline {
+    @apply border border-primary/70 dark:border-primary/60 text-primary dark:text-primary/90 hover:bg-primary/10 dark:hover:bg-primary/20 px-6 py-2 rounded-md shadow-sm font-medium transition-all;
+  }
+  
+  /* Section spacing */
+  .section-spacing {
+    @apply py-12 md:py-16 lg:py-20;
+  }
+  
+  /* Typography */
+  .heading-xl {
+    @apply text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight text-foreground dark:text-foreground;
+  }
+  
+  .heading-lg {
+    @apply text-2xl md:text-3xl font-bold text-foreground dark:text-foreground;
+  }
+  
+  .heading-md {
+    @apply text-xl md:text-2xl font-semibold text-foreground dark:text-foreground;
+  }
+  
+  .body-lg {
+    @apply text-lg leading-relaxed text-muted-foreground dark:text-muted-foreground;
+  }
+  
+  .body-md {
+    @apply text-base leading-relaxed text-muted-foreground dark:text-muted-foreground;
+  }
 }

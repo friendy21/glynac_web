@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server"
 import Stripe from "stripe"
 
-// Initialize Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
   apiVersion: "2023-10-16",
 })
@@ -17,8 +16,6 @@ export async function POST(request: Request) {
         { status: 400 }
       )
     }
-
-    // Set price based on plan and billing cycle - matching pricing page
     let unitAmount
     switch (planId) {
       case "starter":
@@ -57,7 +54,6 @@ export async function POST(request: Request) {
       })
     }
 
-    // Try to find existing price that matches our criteria
     const existingPrices = await stripe.prices.list({
       product: product.id,
       active: true,
@@ -71,7 +67,6 @@ export async function POST(request: Request) {
         p.recurring?.interval === interval
     )
 
-    // Create price if it doesn't exist
     if (!price) {
       price = await stripe.prices.create({
         product: product.id,
@@ -82,8 +77,6 @@ export async function POST(request: Request) {
         },
       })
     }
-
-    // Create a unique checkout session with customer-specific metadata
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       line_items: [

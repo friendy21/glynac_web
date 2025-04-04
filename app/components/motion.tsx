@@ -23,6 +23,19 @@ export function AnimatedElement({
 }: AnimatedElementProps) {
   const [isVisible, setIsVisible] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
+  const [isDark, setIsDark] = useState(false)
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains('dark'));
+    const observer = new MutationObserver(() => {
+      setIsDark(document.documentElement.classList.contains('dark'));
+    });
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class'],
+    });
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -36,19 +49,12 @@ export function AnimatedElement({
           setIsVisible(false)
         }
       },
-      {
-        threshold: 0.1,
-      },
+      { threshold: 0.1 }
     )
 
-    if (ref.current) {
-      observer.observe(ref.current)
-    }
-
+    if (ref.current) observer.observe(ref.current)
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current)
-      }
+      if (ref.current) observer.unobserve(ref.current)
     }
   }, [once])
 
@@ -57,7 +63,9 @@ export function AnimatedElement({
       case "fadeIn":
         return "opacity-0 transition-opacity"
       case "slideIn":
-        return "opacity-0 -translate-x-4 transition-all"
+        return isDark 
+          ? "opacity-0 translate-x-4 transition-all" 
+          : "opacity-0 -translate-x-4 transition-all"
       case "scaleIn":
         return "opacity-0 scale-95 transition-all"
       case "float":
@@ -85,7 +93,11 @@ export function AnimatedElement({
   return (
     <div
       ref={ref}
-      className={cn(getAnimationClass(), isVisible && getVisibleClass(), className)}
+      className={cn(
+        getAnimationClass(),
+        isVisible && getVisibleClass(),
+        className
+      )}
       style={{
         transitionDelay: `${delay}s`,
         transitionDuration: `${duration}s`,
@@ -95,4 +107,3 @@ export function AnimatedElement({
     </div>
   )
 }
-

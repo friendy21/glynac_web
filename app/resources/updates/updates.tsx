@@ -1,11 +1,31 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { Typography } from '@material-tailwind/react';
 import { motion } from 'framer-motion';
 
-export function Updates() {
-  const changelogData = [
+// Define TypeScript interfaces
+interface ChangeItem {
+  type: 'New' | 'Improvement' | 'Fix';
+  text: string;
+}
+
+interface VersionData {
+  version: string;
+  date: string;
+  changes: ChangeItem[];
+}
+
+interface FeedbackState {
+  name: string;
+  phoneNumber: string;
+  email: string;
+  rating: number;
+  suggestions: string;
+}
+
+export function Updates(): React.ReactElement {
+  const changelogData: VersionData[] = [
     {
       version: '(Newest Version) Beta 1.0.0',
       date: 'February 17, 2025',
@@ -18,20 +38,20 @@ export function Updates() {
     },
   ];
 
-  const [feedback, setFeedback] = useState({
+  const [feedback, setFeedback] = useState<FeedbackState>({
     name: '',
     phoneNumber: '',
     email: '',
-    rating: 0, // Added for star rating
+    rating: 0,
     suggestions: '',
   });
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = e.target;
     setFeedback((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     console.log('Feedback submitted:', feedback);
   };
@@ -44,10 +64,10 @@ export function Updates() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6 }}
       >
-        <Typography
+        <Typography 
           variant="h1"
           className="text-center mb-8 text-7xl font-extrabold bg-gradient-to-r from-blue-500 to-purple-600 text-transparent bg-clip-text tracking-wide"
-        >
+          placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           Updates
         </Typography>
       </motion.div>
@@ -61,7 +81,7 @@ export function Updates() {
         <Typography
           variant="h2"
           className="text-center mb-8 text-5xl font-bold border-b-4 border-blue-500 pb-2 text-gray-800"
-        >
+          placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           Versions
         </Typography>
       </motion.div>
@@ -104,11 +124,11 @@ export function Updates() {
         transition={{ duration: 0.6, delay: 0.5 }}
         className="mt-16 bg-gradient-to-br from-blue-900 to-purple-900 p-8 rounded-lg shadow-xl"
       >
-        <Typography variant="h4" className="text-center mb-6 text-4xl font-bold text-white">
+        <Typography variant="h4" className="text-center mb-6 text-4xl font-bold text-white"placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           We want YOUR Feedback
         </Typography>
         <p className="text-center mb-6 text-gray-200 text-lg">
-          Your suggestions fuel our growth! Share ideas for new features or improvements—don’t hold back!
+          Your suggestions fuel our growth! Share ideas for new features or improvements—don't hold back!
         </p>
 
         {/* Feedback Form */}
@@ -185,7 +205,7 @@ export function Updates() {
               value={feedback.suggestions}
               onChange={handleInputChange}
               className="w-full mt-1 p-3 border-2 border-blue-400 rounded-lg bg-white/10 text-white placeholder-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-600 transition-all duration-300"
-              rows="4"
+              rows={4}
               placeholder="Drop your epic ideas here!"
               required
             />

@@ -3,11 +3,35 @@
 import { Typography, Button } from "@material-tailwind/react";
 import { useState, useEffect } from "react";
 
-export function News() {
-  const [currentSlide, setCurrentSlide] = useState(0);
-  const [selectedCategory, setSelectedCategory] = useState(null);
+// Define TypeScript interfaces
+interface Slide {
+  title: string;
+  description: string;
+  imageUrl: string;
+}
 
-  const slides = [
+interface Category {
+  name: string;
+  description: string;
+  imageUrl: string;
+}
+
+interface FooterLink {
+  text: string;
+  href: string;
+}
+
+interface SocialIcon {
+  src: string;
+  alt: string;
+  href: string;
+}
+
+export function News(): React.ReactElement {
+  const [currentSlide, setCurrentSlide] = useState<number>(0);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+
+  const slides: Slide[] = [
     {
       title: "Business Trends in 2025",
       description: "We explore the key trends to watch for in the business world in the coming years.",
@@ -20,13 +44,13 @@ export function News() {
     },
   ];
 
-  const categories = [
+  const categories: Category[] = [
     { name: "Business", description: "AI helps businesses streamline operations, enhance customer experiences, and make data-driven decisions. With AI-powered tools, businesses can automate tasks, improve productivity, and predict market trends more accurately.", imageUrl: "/img/Business.jpg" },
     { name: "Technology", description: "AI is at the forefront of technological advancements, enabling smarter devices, enhanced connectivity, and automation of complex systems. From self-driving cars to advanced robotics, AI is transforming technology by making it more adaptive, efficient, and scalable.", imageUrl: "/img/Technology.jpeg" },
     { name: "Innovation", description: "New ideas and breakthroughs in various industries.AI drives innovation by enabling new solutions that were previously impossible. With AI, industries are able to develop cutting-edge products, automate processes, and create new business models.", imageUrl: "/img/Innovation.jpg" },
   ];
 
-  const footerLinks = [
+  const footerLinks: FooterLink[] = [
     { text: "Home", href: "/home" },
     { text: "Software", href: "/software" },
     { text: "Features", href: "/features" },
@@ -43,7 +67,7 @@ export function News() {
     { text: "About Us", href: "/about-us" },
   ];
 
-  const socialIcons = [
+  const socialIcons: SocialIcon[] = [
     { src: "/img/Facebook.jfif", alt: "Facebook", href: "#" },
     { src: "/img/Instagram.png", alt: "Instagram", href: "#" },
     { src: "/img/Linkedin.png", alt: "LinkedIn", href: "#" },
@@ -61,7 +85,13 @@ export function News() {
     <section className="container mx-auto px-4 py-8 mt-16 md:mt-8">
       {/* Header */}
       <div className="relative mb-8 animate-fadeIn">
-        <Typography variant="h1" className="text-3xl md:text-5xl font-bold text-gray-900">
+        <Typography 
+          variant="h1" 
+          className="text-3xl md:text-5xl font-bold text-gray-900"
+          placeholder=""
+          onPointerEnterCapture={undefined}
+          onPointerLeaveCapture={undefined}
+        >
           <span className="text-red-500 animate-pulse">N</span>ews
         </Typography>
         <div className="w-full h-[2px] bg-gradient-to-r from-red-500 to-gray-900 mt-2"></div>
@@ -69,10 +99,22 @@ export function News() {
 
       {/* Intro Section */}
       <div className="bg-white rounded-xl shadow-lg mb-8 animate-fadeInUp shadow-2xl border-[#3B82F6] bg-white/95 p-4 md:p-8 rounded-xl transform transition-all duration-700 hover:scale-105 md:hover:scale-110 hover:shadow-[0_0_50px_rgba(255,182,193,0.7)]">
-        <Typography variant="h2" className="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4">
+        <Typography
+          variant="h2"
+          className="text-xl md:text-2xl font-bold text-gray-800 mb-2 md:mb-4"
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
+        >
           Stay Up to Date with the Latest News
         </Typography>
-        <Typography variant="paragraph" className="text-base md:text-lg text-gray-600">
+        <Typography 
+          variant="paragraph" 
+          className="text-base md:text-lg text-gray-600"
+          placeholder=""
+          onPointerEnterCapture={() => {}}
+          onPointerLeaveCapture={() => {}}
+        >
           Stay informed with the latest business, technology, and innovation news. Discover in-depth analysis, expert commentary, and breaking news.
         </Typography>
       </div>
@@ -94,10 +136,10 @@ export function News() {
                 className="w-full h-full object-cover"
               />
               <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 md:p-6">
-                <Typography variant="h3" className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2">
+                <Typography variant="h3" className="text-xl md:text-2xl font-bold text-white mb-1 md:mb-2" placeholder="" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
                   {slide.title}
                 </Typography>
-                <Typography variant="paragraph" className="text-sm md:text-lg text-white mb-2 md:mb-4">
+                <Typography variant="paragraph" className="text-sm md:text-lg text-white mb-2 md:mb-4" placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
                   {slide.description}
                 </Typography>
                 <a
@@ -129,10 +171,10 @@ export function News() {
 
       {/* Categories Section */}
       <div className="bg-white rounded-xl shadow-lg p-4 md:p-6 mb-8">
-        <Typography variant="h3" className="text-lg md:text-xl font-semibold text-gray-800 mb-2 md:mb-4">
+        <Typography variant="h3" className="text-lg md:text-xl font-semibold text-gray-800 mb-2 md:mb-4" placeholder="" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
           Explore Categories
         </Typography>
-        <Typography variant="paragraph" className="text-sm md:text-base text-gray-600 mb-4 md:mb-6">
+        <Typography variant="paragraph" className="text-sm md:text-base text-gray-600 mb-4 md:mb-6" placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
           Explore a wide range of categories that keep you informed about the latest trends and updates.
         </Typography>
         
@@ -154,13 +196,16 @@ export function News() {
               {/* Conditionally render button or description */}
               {selectedCategory === category.name ? (
                 <div className="p-2 md:p-4">
-                  <Typography variant="paragraph" className="text-sm md:text-lg text-gray-600 mb-4 text-center">
+                  <Typography variant="paragraph" className="text-sm md:text-lg text-gray-600 mb-4 text-center" placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
                     {category.description}
                   </Typography>
                   <Button
                     color="blue"
                     size="sm"
                     className="mt-2 transition-transform duration-300 hover:scale-105"
+                    placeholder=""
+                    onPointerEnterCapture={() => {}}
+                    onPointerLeaveCapture={() => {}}
                     onClick={() => setSelectedCategory(null)}
                   >
                     Back
@@ -171,6 +216,9 @@ export function News() {
                   color="red"
                   size="sm"
                   className="px-4 py-2 md:px-6 md:py-3 text-sm md:text-lg transition-transform duration-800 hover:scale-105"
+                  placeholder=""
+                  onPointerEnterCapture={() => {}}
+                  onPointerLeaveCapture={() => {}}
                   onClick={() => setSelectedCategory(category.name)}
                 >
                   {category.name}
@@ -189,10 +237,10 @@ export function News() {
           className="w-full h-full object-cover"
         />
         <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black to-transparent p-4 md:p-6">
-          <Typography variant="h3" className="text-xl md:text-2xl font-semibold text-white mb-1 md:mb-2">
+          <Typography variant="h3" className="text-xl md:text-2xl font-semibold text-white mb-1 md:mb-2" placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Expert Insights
           </Typography>
-          <Typography variant="paragraph" className="text-sm md:text-lg text-white">
+          <Typography variant="paragraph" className="text-sm md:text-lg text-white"placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Read exclusive interviews and insights from industry leaders and experts.
           </Typography>
           <a
@@ -212,16 +260,19 @@ export function News() {
           className="w-full h-full object-cover opacity-30 absolute inset-0"
         />
         <div className="absolute bottom-4 md:bottom-6 right-4 md:right-6 p-4 md:p-6 animate-fadeInUp">
-          <Typography variant="h2" className="text-lg md:text-xl font-semibold text-white mb-2">
+          <Typography variant="h2" className="text-lg md:text-xl font-semibold text-white mb-2" placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Stay Updated with Our Newsletter
           </Typography>
-          <Typography variant="paragraph" className="text-sm md:text-base text-white mb-4">
+          <Typography variant="paragraph" className="text-sm md:text-base text-white mb-4"placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Subscribe now to get the latest news, analysis, and insights delivered to your inbox.
           </Typography>
           <Button
             color="white"
             size="sm"
             className="px-4 py-2 md:px-6 md:py-3 transition-transform duration-300 hover:scale-105 text-sm md:text-base"
+            placeholder=""
+            onPointerEnterCapture={() => {}}
+            onPointerLeaveCapture={() => {}}
           >
             Subscribe Now
           </Button>

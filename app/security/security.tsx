@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { AnimatedElement } from "../components/motion"
 
 interface SecurityFeature {
-  icon: JSX.Element
+  icon: React.ReactElement
   title: string
   description: string
 }

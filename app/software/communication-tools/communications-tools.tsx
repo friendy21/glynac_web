@@ -7,19 +7,53 @@ import { Typography } from "@material-tailwind/react";
 import Image from "next/image";
 import Head from "next/head";
 
-// Color palette
-const colors = {
-  primary: "#1E3A8A",
-  secondary: "#3B82F6",
-  accent: "#60A5FA",
-  text: "#64748B",
-  white: "#FFFFFF",
-  lightGray: "#F7FAFC",
-  softBlue: "#E0F2FE",
-  darkPrimary: "#0F1C4D", 
-};
+// Define types
+interface ContentDetail {
+  heading: string;
+  text: string;
+}
 
-const content = {
+interface ProsAndCons {
+  pros: string[];
+  cons: string[];
+  cloud?: {
+    title: string;
+    pros: string[];
+    cons: string[];
+  };
+  onPremise?: {
+    title: string;
+    pros: string[];
+    cons: string[];
+  };
+}
+
+interface ComparisonTable {
+  headers: string[];
+  rows: string[][];
+}
+
+interface UseCase {
+  title: string;
+  points: string[];
+}
+
+interface IconProps {
+  img: string;
+  text: string;
+}
+
+interface ContentData {
+  title: string;
+  description: string;
+  image: string;
+  details: ContentDetail[];
+  prosAndCons: ProsAndCons;
+  comparisonTable: ComparisonTable;
+  useCases?: UseCase[];
+}
+
+const content: ContentData = {
   title: "Communication Tools",
   description: "Explore top communication tools designed to improve collaboration and productivity.",
   image: "/img/data-image.jpg",
@@ -55,7 +89,7 @@ const content = {
 };
 
 // Memoized Icon Component
-const IconComponent = React.memo(({ img, text }) => (
+const IconComponent: React.FC<IconProps> = React.memo(({ img, text }) => (
   <motion.div
     variants={{
       hidden: { opacity: 0, y: 50, scale: 0.9 },
@@ -70,16 +104,17 @@ const IconComponent = React.memo(({ img, text }) => (
       alt={text}
       width={96}
       height={96}
-      className="mb-4 rounded-full shadow-xl border border-[colors.secondary]/50 bg-[colors.white] p-3"
+      className="mb-4 rounded-full shadow-lg border border-primary/50 bg-background p-3"
     />
-    <Typography className="text-lg font-bold text-[colors.primary]">{text}</Typography>
+    <Typography className="text-lg font-bold text-primary">{text}</Typography>
   </motion.div>
 ));
 
-export function CommunicationTools() {
+IconComponent.displayName = 'IconComponent';
+
+export function CommunicationTools(): JSX.Element {
   const { category = "Communication Tools" } = useParams();
  
-
   // Animation variants
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -116,23 +151,23 @@ export function CommunicationTools() {
         <title>{content.title} | Glynac.AI</title>
         <meta name="description" content={content.description} />
       </Head>
-      <div className="bg-gradient-to-br from-[colors.softBlue] via-[colors.white] to-[colors.softBlue] min-h-screen overflow-x-hidden">
+      <div className="bg-gradient-to-br from-accent via-background to-accent min-h-screen overflow-x-hidden">
         {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 2 }}
-          className="relative min-h-screen flex flex-col items-center justify-center text-center text-[colors.white] pt-32 pb-16 px-6 bg-[colors.primary]/95 backdrop-blur-2xl overflow-hidden"
+          className="relative min-h-screen flex flex-col items-center justify-center text-center text-primary-foreground pt-32 pb-16 px-6 bg-primary/95 backdrop-blur-2xl overflow-hidden"
         >
           <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-[colors.secondary]/30 to-[colors.accent]/30"
+            className="absolute inset-0 bg-gradient-to-r from-primary/30 to-accent/30"
             initial={{ y: -200 }}
             animate={{ y: 200 }}
             transition={{ repeat: Infinity, repeatType: "reverse", duration: 15, ease: "linear" }}
           />
           <Typography
             variant="h1"
-            className="relative z-10 mb-8 font-extrabold text-5xl sm:text-6xl md:text-8xl lg:text-9xl text-grey-900 bg-clip-text bg-gradient-to-r from-[colors.secondary] via-[colors.accent] to-[colors.white] tracking-widest uppercase drop-shadow-2xl"
+            className="relative z-10 mb-8 font-extrabold text-5xl sm:text-6xl md:text-8xl lg:text-9xl gradient-text tracking-widest uppercase drop-shadow-2xl"
           >
             {content.title.split(" ").map((word, index) => (
               <motion.span
@@ -149,7 +184,7 @@ export function CommunicationTools() {
           <motion.div variants={fadeIn} initial="hidden" animate="visible" className="relative z-10 max-w-4xl">
             <Typography
               variant="lead"
-              className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wider opacity-90 text-[colors.white]"
+              className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-light tracking-wider opacity-90 text-primary-foreground"
             >
               {content.description}
             </Typography>
@@ -168,11 +203,11 @@ export function CommunicationTools() {
             <motion.div variants={itemVariants} className="w-full lg:w-1/2 text-left">
               <Typography
                 variant="h2"
-                className={`text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-[${colors.darkPrimary}] tracking-tight leading-tight`}
+                className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-primary tracking-tight leading-tight"
               >
                 {content.title}
               </Typography>
-              <Typography className="text-lg md:text-xl text-[colors.text] leading-relaxed">
+              <Typography className="text-lg md:text-xl text-muted-foreground leading-relaxed">
                 {content.description}
               </Typography>
             </motion.div>
@@ -186,7 +221,7 @@ export function CommunicationTools() {
                 alt="Software Visual"
                 width={600}
                 height={400}
-                className="w-full max-w-md h-auto rounded-2xl shadow-2xl border border-[colors.secondary]/20 transform transition-all duration-700 hover:shadow-[0_0_50px_rgba(59,130,246,0.7)]"
+                className="w-full max-w-md h-auto rounded-2xl shadow-lg border border-primary/20 transform transition-all duration-700 hover:shadow-lg"
               />
             </motion.div>
           </div>
@@ -221,15 +256,15 @@ export function CommunicationTools() {
                     <motion.div
                       key={index}
                       variants={itemVariants}
-                      className="mb-10 bg-[colors.white] p-8 rounded-2xl shadow-lg"
+                      className="mb-10 bg-card p-8 rounded-lg shadow-md"
                     >
                       <Typography
                         variant="h3"
-                        className="text-3xl md:text-4xl font-bold text-[colors.primary] mb-4"
+                        className="text-3xl md:text-4xl font-bold text-primary mb-4"
                       >
                         {section.heading}
                       </Typography>
-                      <Typography className="text-lg text-[colors.text] leading-loose">
+                      <Typography className="text-lg text-muted-foreground leading-loose">
                         {section.text}
                       </Typography>
                     </motion.div>
@@ -244,27 +279,27 @@ export function CommunicationTools() {
                     <div className="mb-12">
                       <Typography
                         variant="h3"
-                        className="text-3xl md:text-4xl font-bold text-[colors.primary] mb-6"
+                        className="text-3xl md:text-4xl font-bold text-primary mb-6"
                       >
                         {content.prosAndCons.cloud.title}
                       </Typography>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[colors.text] text-lg">
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 text-muted-foreground text-lg">
                         {content.prosAndCons.cloud.pros.map((pro, index) => (
                           <motion.li
                             key={index}
                             variants={itemVariants}
-                            className="flex items-start gap-3 bg-[colors.lightGray] p-4 rounded-lg shadow-md"
+                            className="flex items-start gap-3 bg-muted p-4 rounded-lg shadow-sm"
                           >
-                            <span className="text-[colors.secondary] text-2xl">✔</span> {pro}
+                            <span className="text-primary text-2xl">✔</span> {pro}
                           </motion.li>
                         ))}
                         {content.prosAndCons.cloud.cons.map((con, index) => (
                           <motion.li
                             key={index}
                             variants={itemVariants}
-                            className="flex items-start gap-3 bg-[colors.lightGray] p-4 rounded-lg shadow-md"
+                            className="flex items-start gap-3 bg-muted p-4 rounded-lg shadow-sm"
                           >
-                            <span className="text-red-500 text-2xl">✘</span> {con}
+                            <span className="text-destructive text-2xl">✘</span> {con}
                           </motion.li>
                         ))}
                       </ul>
@@ -274,27 +309,27 @@ export function CommunicationTools() {
                     <div>
                       <Typography
                         variant="h3"
-                        className="text-3xl md:text-4xl font-bold text-[colors.primary] mb-6"
+                        className="text-3xl md:text-4xl font-bold text-primary mb-6"
                       >
                         {content.prosAndCons.onPremise.title}
                       </Typography>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[colors.text] text-lg">
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 text-muted-foreground text-lg">
                         {content.prosAndCons.onPremise.pros.map((pro, index) => (
                           <motion.li
                             key={index}
                             variants={itemVariants}
-                            className="flex items-start gap-3 bg-[colors.lightGray] p-4 rounded-lg shadow-md"
+                            className="flex items-start gap-3 bg-muted p-4 rounded-lg shadow-sm"
                           >
-                            <span className="text-[colors.secondary] text-2xl">✔</span> {pro}
+                            <span className="text-primary text-2xl">✔</span> {pro}
                           </motion.li>
                         ))}
                         {content.prosAndCons.onPremise.cons.map((con, index) => (
                           <motion.li
                             key={index}
                             variants={itemVariants}
-                            className="flex items-start gap-3 bg-[colors.lightGray] p-4 rounded-lg shadow-md"
+                            className="flex items-start gap-3 bg-muted p-4 rounded-lg shadow-sm"
                           >
-                            <span className="text-red-500 text-2xl">✘</span> {con}
+                            <span className="text-destructive text-2xl">✘</span> {con}
                           </motion.li>
                         ))}
                       </ul>
@@ -302,23 +337,23 @@ export function CommunicationTools() {
                   )}
                   {content.prosAndCons.pros && (
                     <div>
-                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 text-[colors.text] text-lg">
+                      <ul className="grid grid-cols-1 md:grid-cols-2 gap-6 text-muted-foreground text-lg">
                         {content.prosAndCons.pros.map((pro, index) => (
                           <motion.li
                             key={index}
                             variants={itemVariants}
-                            className="flex items-start gap-3 bg-[colors.lightGray] p-4 rounded-lg shadow-md"
+                            className="flex items-start gap-3 bg-muted p-4 rounded-lg shadow-sm"
                           >
-                            <span className="text-[colors.secondary] text-2xl">✔</span> {pro}
+                            <span className="text-primary text-2xl">✔</span> {pro}
                           </motion.li>
                         ))}
                         {content.prosAndCons.cons.map((con, index) => (
                           <motion.li
                             key={index}
                             variants={itemVariants}
-                            className="flex items-start gap-3 bg-[colors.lightGray] p-4 rounded-lg shadow-md"
+                            className="flex items-start gap-3 bg-muted p-4 rounded-lg shadow-sm"
                           >
-                            <span className="text-red-500 text-2xl">✘</span> {con}
+                            <span className="text-destructive text-2xl">✘</span> {con}
                           </motion.li>
                         ))}
                       </ul>
@@ -332,22 +367,22 @@ export function CommunicationTools() {
                 <motion.div variants={itemVariants} className="mt-16 max-w-5xl w-full">
                   <Typography
                     variant="h3"
-                    className="text-3xl md:text-4xl font-bold text-[colors.primary] mb-8 text-center"
+                    className="text-3xl md:text-4xl font-bold text-primary mb-8 text-center"
                   >
                     Feature Comparison
                   </Typography>
                   <motion.div
                     whileHover={{ scale: 1.02 }}
                     transition={{ duration: 0.3 }}
-                    className="shadow-2xl rounded-xl overflow-hidden bg-[colors.white]"
+                    className="shadow-lg rounded-lg overflow-hidden bg-card"
                   >
                     <table className="w-full text-left border-collapse">
                       <thead>
-                        <tr className="bg-[colors.primary] text-[colors.white]">
+                        <tr className="bg-primary text-primary-foreground">
                           {content.comparisonTable.headers.map((header, index) => (
                             <th
                               key={index}
-                              className="px-6 py-4 font-semibold text-base uppercase tracking-wider border-b border-[colors.secondary]/50"
+                              className="px-6 py-4 font-semibold text-base uppercase tracking-wider border-b border-primary/50"
                             >
                               {header}
                             </th>
@@ -362,13 +397,13 @@ export function CommunicationTools() {
                             animate={{ opacity: 1, x: 0 }}
                             transition={{ delay: rowIndex * 0.1, duration: 0.6 }}
                             className={`${
-                              rowIndex % 2 === 0 ? "bg-[colors.white]" : "bg-[colors.lightGray]"
-                            } hover:bg-[colors.secondary]/10 transition-colors`}
+                              rowIndex % 2 === 0 ? "bg-background" : "bg-muted"
+                            } hover:bg-accent/10 transition-colors`}
                           >
                             {row.map((cell, cellIndex) => (
                               <td
                                 key={cellIndex}
-                                className="px-6 py-4 text-[colors.text] text-base border-b border-[colors.secondary]/20"
+                                className="px-6 py-4 text-muted-foreground text-base border-b border-primary/20"
                               >
                                 {cell}
                               </td>
@@ -388,22 +423,22 @@ export function CommunicationTools() {
                     <motion.div
                       key={index}
                       variants={itemVariants}
-                      className="mb-12 bg-[colors.white] p-8 rounded-2xl shadow-lg"
+                      className="mb-12 bg-card p-8 rounded-lg shadow-md"
                     >
                       <Typography
                         variant="h3"
-                        className="text-3xl md:text-4xl font-bold text-[colors.primary] mb-4"
+                        className="text-3xl md:text-4xl font-bold text-primary mb-4"
                       >
                         {useCase.title}
                       </Typography>
-                      <ul className="list-none text-lg text-[colors.text] space-y-4">
+                      <ul className="list-none text-lg text-muted-foreground space-y-4">
                         {useCase.points.map((point, i) => (
                           <motion.li
                             key={i}
                             variants={itemVariants}
                             className="flex items-start gap-3"
                           >
-                            <span className="text-[colors.secondary] font-bold text-2xl">→</span> {point}
+                            <span className="text-primary font-bold text-2xl">→</span> {point}
                           </motion.li>
                         ))}
                       </ul>
@@ -418,6 +453,5 @@ export function CommunicationTools() {
     </>
   );
 }
-
 
 export default CommunicationTools;

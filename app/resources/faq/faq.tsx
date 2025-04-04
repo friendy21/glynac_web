@@ -8,8 +8,24 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { motion } from "framer-motion";
 import Image from "next/image";
 
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+interface ClientFeedback {
+  logo: string;
+  alt: string;
+  feedback: string;
+}
+
+interface EfficiencyData {
+  month: string;
+  efficiency: number;
+}
+
 // FAQ Data
-const faqData = [
+const faqData: FAQItem[] = [
   {
     question: "How does Glynac.AI ensure security and privacy?",
     answer: "We use End-to-End Encryption (E2EE) and real-time anonymization, ensuring all data remains protected before AI analysis.",
@@ -25,7 +41,7 @@ const faqData = [
 ];
 
 // Client Feedback Data
-const clientFeedbackData = [
+const clientFeedbackData: ClientFeedback[] = [
   {
     logo: "/img/Salesforce-logo.png",
     alt: "Salesforce Logo",
@@ -34,7 +50,7 @@ const clientFeedbackData = [
   {
     logo: "/img/grammarly.png",
     alt: "Grammarly Logo",
-    feedback: "By leveraging Glynac’s data-driven insights, Grammarly saw a 25% reduction in employee turnover within the first year.",
+    feedback: "By leveraging Glynac's data-driven insights, Grammarly saw a 25% reduction in employee turnover within the first year.",
   },
   {
     logo: "/img/Ferguson-Logo.png",
@@ -44,7 +60,7 @@ const clientFeedbackData = [
   {
     logo: "/img/general-electric-ge-logo.png",
     alt: "General Electric Logo",
-    feedback: "Over 90% of managers reported greater confidence in decision-making after implementing Glynac’s streamlined reporting tools.",
+    feedback: "Over 90% of managers reported greater confidence in decision-making after implementing Glynac's streamlined reporting tools.",
   },
   {
     logo: "/img/broadcom.png",
@@ -54,12 +70,33 @@ const clientFeedbackData = [
   {
     logo: "/img/Loom.png",
     alt: "Loom Logo",
-    feedback: "With Glynac’s expertise, Loom achieved a 50% improvement in employee engagement scores, fostering stronger workplace communities.",
+    feedback: "With Glynac's expertise, Loom achieved a 50% improvement in employee engagement scores, fostering stronger workplace communities.",
   },
 ];
 
+// Efficiency data
+const efficiencyData: EfficiencyData[] = [
+  { month: "Jan", efficiency: 60 },
+  { month: "Feb", efficiency: 65 },
+  { month: "Mar", efficiency: 70 },
+  { month: "Apr", efficiency: 72 },
+  { month: "May", efficiency: 75 },
+  { month: "Jun", efficiency: 78 },
+  { month: "Jul", efficiency: 80 },
+  { month: "Aug", efficiency: 83 },
+  { month: "Sep", efficiency: 85 },
+  { month: "Oct", efficiency: 88 },
+  { month: "Nov", efficiency: 90 },
+  { month: "Dec", efficiency: 92 },
+];
+
 // FAQ Card Component
-function FAQCard({ question, answer }) {
+interface FAQCardProps {
+  question: string;
+  answer: string;
+}
+
+function FAQCard({ question, answer }: FAQCardProps): React.ReactElement {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -67,41 +104,60 @@ function FAQCard({ question, answer }) {
       transition={{ duration: 0.6 }}
       viewport={{ once: true }}
     >
-      <Card className="bg-gray-800/30 backdrop-blur-xl border border-gray-700/50 p-6 rounded-2xl shadow-2xl hover:scale-105 transition-transform">
-        <ChatBubbleBottomCenterTextIcon className="h-12 w-12 text-blue-400" />
-        <Typography variant="h5" className="font-bold text-white mt-4">{question}</Typography>
-        <Typography className="text-gray-300 text-center mt-2">{answer}</Typography>
+      <Card
+        className="bg-card/30 backdrop-blur-xl border border-border p-6 rounded-lg shadow-md hover:scale-105 transition-transform"
+        variant="filled"
+        placeholder=""
+        onPointerEnterCapture={() => {}}
+        onPointerLeaveCapture={() => {}}
+      >
+        <ChatBubbleBottomCenterTextIcon className="h-12 w-12 text-primary" />
+        <Typography 
+          variant="h5" 
+          className="font-bold text-foreground mt-4" 
+          placeholder="" 
+          onPointerEnterCapture={() => {}} 
+          onPointerLeaveCapture={() => {}}>
+          {question}
+        </Typography>
+        <Typography className="text-muted-foreground text-center mt-2" placeholder="" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>{answer}</Typography>
       </Card>
     </motion.div>
   );
 }
 
 // Client Feedback Item Component
-function ClientFeedbackItem({ logo, alt, feedback }) {
+interface ClientFeedbackItemProps {
+  logo: string;
+  alt: string;
+  feedback: string;
+}
+
+function ClientFeedbackItem({ logo, alt, feedback }: ClientFeedbackItemProps):React.ReactElement {
   return (
     <div className="flex items-center space-x-6 w-full max-w-4xl">
       <div className="w-[160px] h-16 relative flex-shrink-0">
         <Image
           src={logo}
           alt={alt}
-          layout="fill"
-          objectFit="contain"
+          fill
+          style={{ objectFit: "contain" }}
           loading="lazy"
         />
       </div>
-      <Typography className="text-lg font-normal text-blue-gray-700">{feedback}</Typography>
+      <Typography className="text-lg font-normal text-muted-foreground">{feedback}</Typography>
     </div>
   );
 }
 
 // Main FAQ Component
-export default function FAQ() {
+export default function FAQ(): JSX.Element {
   return (
     <>
       {/* Hero Section */}
-      <div className="relative flex min-h-screen items-center justify-center bg-black text-white">
+      <div className="relative flex min-h-screen items-center justify-center bg-background text-foreground">
         <div className="absolute top-0 h-full w-full bg-[url('/img/background-3.png')] bg-cover bg-center opacity-20" />
-        <div className="absolute top-0 h-full w-full backdrop-blur-xl bg-black/40" />
+        <div className="absolute top-0 h-full w-full backdrop-blur-xl bg-background/40" />
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -110,7 +166,7 @@ export default function FAQ() {
         >
           <Typography
             variant="h1"
-            className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-teal-400 font-black text-5xl md:text-7xl"
+            className="gradient-text font-black text-5xl md:text-7xl"
           >
             Frequently Asked Questions
           </Typography>
@@ -118,7 +174,7 @@ export default function FAQ() {
       </div>
 
       {/* FAQ Section */}
-      <section className="-mt-32 bg-gray-900 px-6 pb-20 pt-12">
+      <section className="-mt-32 bg-muted px-6 pb-20 pt-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-10">
           {faqData.map((faq, index) => (
             <FAQCard key={index} question={faq.question} answer={faq.answer} />
@@ -127,9 +183,9 @@ export default function FAQ() {
       </section>
 
       {/* Client Feedback Section */}
-      <section className="bg-white py-16">
+      <section className="bg-background py-16">
         <div className="max-w-6xl mx-auto px-4">
-          <Typography variant="h2" className="text-4xl font-bold text-blue-gray-900 text-left mb-8">
+          <Typography variant="h2" className="text-4xl font-bold text-foreground text-left mb-8">
             Client Feedback
           </Typography>
           <div className="flex flex-col space-y-8 items-center w-full">
@@ -141,11 +197,11 @@ export default function FAQ() {
       </section>
 
       {/* Case Study Section */}
-      <section className="bg-gray-900 py-16">
-        <div className="max-w-5xl mx-auto px-4 text-white text-left">
+      <section className="bg-muted py-16">
+        <div className="max-w-5xl mx-auto px-4 text-foreground text-left">
           <Typography
             variant="h2"
-            className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-teal-300"
+            className="text-4xl font-bold gradient-text"
           >
             Case Study
           </Typography>
@@ -156,46 +212,45 @@ export default function FAQ() {
       </section>
 
       {/* Summary Section */}
-      <section className="bg-white py-16">
+      <section className="bg-background py-16">
         <div className="max-w-5xl mx-auto text-center">
-          <Typography variant="h3" className="text-2xl font-bold text-black">
+          <Typography variant="h3" className="text-2xl font-bold text-foreground">
             The below table contains a summary it generated within seconds.
           </Typography>
           <div className="flex justify-center mt-4">
-            <PlayCircleIcon className="h-14 w-14 text-blue-400 hover:scale-110 transition-transform" />
+            <PlayCircleIcon className="h-14 w-14 text-primary hover:scale-110 transition-transform" />
           </div>
         </div>
       </section>
 
       {/* Graph & Insights Section */}
-      <section className="bg-white py-16">
+      <section className="bg-background py-16">
         <div className="max-w-6xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between">
-          <Typography className="text-lg font-semibold text-black max-w-lg">
+          <Typography className="text-lg font-semibold text-foreground max-w-lg">
             With a strong history of notable corporate clients, Glynac has been trusted by industry leaders to help 
             analyze and streamline their employee analytics, improving efficiency and helping foster stronger working 
             communities.
           </Typography>
           <div className="w-full md:w-[50%] h-64 mt-8 md:mt-0">
             <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={[
-                { month: "Jan", efficiency: 60 },
-                { month: "Feb", efficiency: 65 },
-                { month: "Mar", efficiency: 70 },
-                { month: "Apr", efficiency: 72 },
-                { month: "May", efficiency: 75 },
-                { month: "Jun", efficiency: 78 },
-                { month: "Jul", efficiency: 80 },
-                { month: "Aug", efficiency: 83 },
-                { month: "Sep", efficiency: 85 },
-                { month: "Oct", efficiency: 88 },
-                { month: "Nov", efficiency: 90 },
-                { month: "Dec", efficiency: 92 },
-              ]}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" padding={{ left: 10, right: 10 }} />
-                <YAxis domain={[50, 100]} />
-                <Tooltip formatter={(value) => `${value}%`} />
-                <Line type="monotone" dataKey="efficiency" stroke="#3b82f6" strokeWidth={3} />
+              <LineChart data={efficiencyData}>
+                <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" />
+                <XAxis dataKey="month" padding={{ left: 10, right: 10 }} stroke="var(--muted-foreground)" />
+                <YAxis domain={[50, 100]} stroke="var(--muted-foreground)" />
+                <Tooltip 
+                  formatter={(value) => `${value}%`} 
+                  contentStyle={{ 
+                    backgroundColor: 'var(--card)',
+                    borderColor: 'var(--border)',
+                    color: 'var(--foreground)'
+                  }} 
+                />
+                <Line 
+                  type="monotone" 
+                  dataKey="efficiency" 
+                  stroke="var(--primary)" 
+                  strokeWidth={3} 
+                />
               </LineChart>
             </ResponsiveContainer>
           </div>
